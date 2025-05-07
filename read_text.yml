@@ -1,0 +1,227 @@
+app:
+  description: ''
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: advanced-chat
+  name: テキストファイル読み込み
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/openai:0.0.22@fa668d0ec3b434270453ede311196acaad0531ad9e3d5561cd622e6508cd3254
+kind: app
+version: 0.2.0
+workflow:
+  conversation_variables: []
+  environment_variables:
+  - description: ''
+    id: bcf0b112-eb9b-4ab3-bee1-abcea84d3d3e
+    name: DIFY_BASE_URL
+    selector:
+    - env
+    - DIFY_BASE_URL
+    value: http://localhost/v1
+    value_type: string
+  - description: ''
+    id: 901b48a5-4dfe-42ef-942d-338e8ca8b708
+    name: DIFY_API_KEY
+    selector:
+    - env
+    - DIFY_API_KEY
+    value: 5c7ef288-400a-4847-985b-13aa06079288
+    value_type: string
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .txt
+      - .kt
+      allowed_file_types:
+      - custom
+      allowed_file_upload_methods:
+      - local_file
+      enabled: true
+      fileUploadConfig:
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        image_file_size_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: answer
+      id: 1746628575675-source-answer-target
+      selected: false
+      source: '1746628575675'
+      sourceHandle: source
+      target: answer
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: code
+      id: 1746622328814-source-1746629201774-target
+      selected: false
+      source: '1746622328814'
+      sourceHandle: source
+      target: '1746629201774'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: code
+        targetType: llm
+      id: 1746629201774-source-1746628575675-target
+      source: '1746629201774'
+      sourceHandle: source
+      target: '1746628575675'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: 開始
+        type: start
+        variables: []
+      height: 54
+      id: '1746622328814'
+      position:
+        x: 30
+        y: 252.5
+      positionAbsolute:
+        x: 30
+        y: 252.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        answer: '{{#1746628575675.text#}}'
+        desc: ''
+        selected: false
+        title: 回答
+        type: answer
+        variables: []
+      height: 105
+      id: answer
+      position:
+        x: 942
+        y: 252.5
+      positionAbsolute:
+        x: 942
+        y: 252.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gpt-4
+          provider: langgenius/openai/openai
+        prompt_template:
+        - id: c042bff8-54b1-460d-8ff7-9f4d2a4b4464
+          role: system
+          text: '{{#sys.query#}}
+
+            {{#1746629201774.renamed_files#}}'
+        selected: false
+        title: LLM
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: '1746628575675'
+      position:
+        x: 638
+        y: 252.5
+      positionAbsolute:
+        x: 638
+        y: 252.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        code: "import os\nimport requests\n\ndef main(uploaded_files: list) -> dict:\n\
+          \    # 環境変数から URL プレフィックスと API キーを取得\n    base_url = 'http://api:5001'\n\
+          \n    renamed = []\n    for f in uploaded_files:\n        # f['remote_url']\
+          \ は \"/files/xxxx?...\" の形式\n        file_url = f\"{base_url}{f['remote_url']}\"\
+          \n        resp = requests.get(file_url)\n        resp.raise_for_status()\n\
+          \n        original = f.get('filename') or 'file'\n        new_name = f\"\
+          renamed_{original}\"\n\n        renamed.append({\n            'filename':\
+          \ new_name,        # ここでリネーム\n            'content': resp.text,     # テキストデータ\n\
+          \            'mime_type': f.get('mime_type')\n        })\n\n    # 出力変数に返却\n\
+          \    return {'renamed_files': renamed}"
+        code_language: python3
+        desc: ''
+        outputs:
+          renamed_files:
+            children: null
+            type: array[object]
+        selected: true
+        title: コード実行（テキスト読み出し）
+        type: code
+        variables:
+        - value_selector:
+          - sys
+          - files
+          variable: uploaded_files
+      height: 54
+      id: '1746629201774'
+      position:
+        x: 334
+        y: 252.5
+      positionAbsolute:
+        x: 334
+        y: 252.5
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    viewport:
+      x: -130
+      y: 125
+      zoom: 0.7
