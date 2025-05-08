@@ -14,23 +14,7 @@ kind: app
 version: 0.2.0
 workflow:
   conversation_variables: []
-  environment_variables:
-  - description: ''
-    id: bcf0b112-eb9b-4ab3-bee1-abcea84d3d3e
-    name: DIFY_BASE_URL
-    selector:
-    - env
-    - DIFY_BASE_URL
-    value: http://localhost/v1
-    value_type: string
-  - description: ''
-    id: 901b48a5-4dfe-42ef-942d-338e8ca8b708
-    name: DIFY_API_KEY
-    selector:
-    - env
-    - DIFY_API_KEY
-    value: 5c7ef288-400a-4847-985b-13aa06079288
-    value_type: string
+  environment_variables: []
   features:
     file_upload:
       allowed_file_extensions:
@@ -54,7 +38,7 @@ workflow:
         transfer_methods:
         - local_file
         - remote_url
-      number_limits: 3
+      number_limits: 10
     opening_statement: ''
     retriever_resource:
       enabled: true
@@ -72,38 +56,124 @@ workflow:
   graph:
     edges:
     - data:
-        isInLoop: false
-        sourceType: llm
-        targetType: answer
-      id: 1746628575675-source-answer-target
-      selected: false
-      source: '1746628575675'
-      sourceHandle: source
-      target: answer
-      targetHandle: target
-      type: custom
-      zIndex: 0
-    - data:
         isInIteration: false
         isInLoop: false
         sourceType: start
-        targetType: code
-      id: 1746622328814-source-1746629201774-target
+        targetType: iteration
+      id: 1746622328814-source-1746710668148-target
       selected: false
       source: '1746622328814'
       sourceHandle: source
-      target: '1746629201774'
+      target: '1746710668148'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1746710668148'
+        sourceType: iteration-start
+        targetType: if-else
+      id: 1746710668148start-source-1746710713403-target
+      selected: false
+      source: 1746710668148start
+      sourceHandle: source
+      target: '1746710713403'
+      targetHandle: target
+      type: custom
+      zIndex: 1002
+    - data:
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1746710668148'
+        sourceType: if-else
+        targetType: http-request
+      id: 1746710713403-true-1746710683808-target
+      selected: false
+      source: '1746710713403'
+      sourceHandle: 'true'
+      target: '1746710683808'
+      targetHandle: target
+      type: custom
+      zIndex: 1002
+    - data:
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1746710668148'
+        sourceType: if-else
+        targetType: document-extractor
+      id: 1746710713403-false-1746710802190-target
+      selected: false
+      source: '1746710713403'
+      sourceHandle: 'false'
+      target: '1746710802190'
+      targetHandle: target
+      type: custom
+      zIndex: 1002
+    - data:
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1746710668148'
+        sourceType: document-extractor
+        targetType: variable-aggregator
+      id: 1746710802190--1746710835189-target
+      selected: false
+      source: '1746710802190'
+      sourceHandle: source
+      target: '1746710835189'
+      targetHandle: target
+      type: custom
+      zIndex: 1002
+    - data:
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1746710668148'
+        sourceType: http-request
+        targetType: variable-aggregator
+      id: 1746710683808-source-1746710835189-target
+      selected: false
+      source: '1746710683808'
+      sourceHandle: source
+      target: '1746710835189'
+      targetHandle: target
+      type: custom
+      zIndex: 1002
+    - data:
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1746710668148'
+        sourceType: variable-aggregator
+        targetType: code
+      id: 1746710835189--1746711834267-target
+      selected: false
+      source: '1746710835189'
+      sourceHandle: source
+      target: '1746711834267'
+      targetHandle: target
+      type: custom
+      zIndex: 1002
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: iteration
+        targetType: llm
+      id: 1746710668148-source-1746712088521-target
+      selected: false
+      source: '1746710668148'
+      sourceHandle: source
+      target: '1746712088521'
       targetHandle: target
       type: custom
       zIndex: 0
     - data:
         isInLoop: false
-        sourceType: code
-        targetType: llm
-      id: 1746629201774-source-1746628575675-target
-      source: '1746629201774'
+        sourceType: llm
+        targetType: answer
+      id: 1746712088521-source-answer-target
+      selected: false
+      source: '1746712088521'
       sourceHandle: source
-      target: '1746628575675'
+      target: answer
       targetHandle: target
       type: custom
       zIndex: 0
@@ -118,17 +188,17 @@ workflow:
       id: '1746622328814'
       position:
         x: 30
-        y: 252.5
+        y: 431.5
       positionAbsolute:
         x: 30
-        y: 252.5
+        y: 431.5
       selected: false
       sourcePosition: right
       targetPosition: left
       type: custom
       width: 244
     - data:
-        answer: '{{#1746628575675.text#}}'
+        answer: '{{#1746712088521.text#}}'
         desc: ''
         selected: false
         title: 回答
@@ -137,91 +207,327 @@ workflow:
       height: 105
       id: answer
       position:
-        x: 942
-        y: 252.5
+        x: 2118
+        y: 431.5
       positionAbsolute:
-        x: 942
-        y: 252.5
+        x: 2118
+        y: 431.5
       selected: false
       sourcePosition: right
       targetPosition: left
       type: custom
       width: 244
+    - data:
+        desc: ''
+        error_handle_mode: terminated
+        height: 463
+        is_parallel: false
+        iterator_selector:
+        - sys
+        - files
+        output_selector:
+        - '1746711834267'
+        - result
+        output_type: array[string]
+        parallel_nums: 10
+        selected: false
+        start_node_id: 1746710668148start
+        title: イテレーション
+        type: iteration
+        width: 1420
+      height: 463
+      id: '1746710668148'
+      position:
+        x: 334
+        y: 431.5
+      positionAbsolute:
+        x: 334
+        y: 431.5
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 1420
+      zIndex: 1
+    - data:
+        desc: ''
+        isInIteration: true
+        selected: false
+        title: ''
+        type: iteration-start
+      draggable: false
+      height: 48
+      id: 1746710668148start
+      parentId: '1746710668148'
+      position:
+        x: 60
+        y: 151
+      positionAbsolute:
+        x: 394
+        y: 582.5
+      selectable: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom-iteration-start
+      width: 44
+      zIndex: 1002
+    - data:
+        authorization:
+          config: null
+          type: no-auth
+        body:
+          data: []
+          type: none
+        desc: ''
+        headers: ''
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1746710668148'
+        method: get
+        params: ''
+        retry_config:
+          max_retries: 3
+          retry_enabled: true
+          retry_interval: 100
+        selected: false
+        ssl_verify: true
+        timeout:
+          max_connect_timeout: 0
+          max_read_timeout: 0
+          max_write_timeout: 0
+        title: HTTPリクエスト
+        type: http-request
+        url: http://api:5001{{#1746710668148.item.url#}}
+        variables: []
+      height: 142
+      id: '1746710683808'
+      parentId: '1746710668148'
+      position:
+        x: 508
+        y: 261
+      positionAbsolute:
+        x: 842
+        y: 692.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      zIndex: 1002
+    - data:
+        cases:
+        - case_id: 'true'
+          conditions:
+          - comparison_operator: is
+            id: 608ba3da-8379-4301-9315-e2d971072760
+            value: .swift
+            varType: file
+            variable_selector:
+            - '1746710668148'
+            - item
+            - extension
+          - comparison_operator: is
+            id: 9b9e87d8-a522-401e-bd19-9de4b7c901bd
+            value: .kt
+            varType: file
+            variable_selector:
+            - '1746710668148'
+            - item
+            - extension
+          - comparison_operator: is
+            id: 5b6e8bd3-fcb2-4cc9-903f-b5948e5c1dbe
+            value: .h
+            varType: file
+            variable_selector:
+            - '1746710668148'
+            - item
+            - extension
+          - comparison_operator: is
+            id: a650476f-0f66-413c-8ccb-917d60e55e49
+            value: .m
+            varType: file
+            variable_selector:
+            - '1746710668148'
+            - item
+            - extension
+          - comparison_operator: is
+            id: 4814d2b9-dcfa-404f-a09a-9d850863cbd2
+            value: .java
+            varType: file
+            variable_selector:
+            - '1746710668148'
+            - item
+            - extension
+          id: 'true'
+          logical_operator: or
+        desc: ''
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1746710668148'
+        selected: false
+        title: IF/ELSE
+        type: if-else
+      height: 230
+      id: '1746710713403'
+      parentId: '1746710668148'
+      position:
+        x: 204
+        y: 60
+      positionAbsolute:
+        x: 538
+        y: 491.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      zIndex: 1002
+    - data:
+        desc: ''
+        isInIteration: true
+        isInLoop: false
+        is_array_file: false
+        iteration_id: '1746710668148'
+        selected: false
+        title: テキスト抽出
+        type: document-extractor
+        variable_selector:
+        - '1746710668148'
+        - item
+      height: 92
+      id: '1746710802190'
+      parentId: '1746710668148'
+      position:
+        x: 508
+        y: 129
+      positionAbsolute:
+        x: 842
+        y: 560.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      zIndex: 1002
+    - data:
+        advanced_settings:
+          group_enabled: true
+          groups:
+          - groupId: 208bb9a3-4ab2-42da-95e3-3898c28d4b4e
+            group_name: FileContent
+            output_type: string
+            variables:
+            - - '1746710802190'
+              - text
+            - - '1746710683808'
+              - body
+        desc: ''
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1746710668148'
+        output_type: file
+        selected: false
+        title: 変数集約器
+        type: variable-aggregator
+        variables:
+        - - '1746710802190'
+          - text
+      height: 131
+      id: '1746710835189'
+      parentId: '1746710668148'
+      position:
+        x: 812
+        y: 109.5
+      positionAbsolute:
+        x: 1146
+        y: 541
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      zIndex: 1002
+    - data:
+        code: "\ndef main(fileName: str, fileContent: str) -> dict:\n    return {\n\
+          \        \"result\": {\n            \"name\": fileName,\n            \"\
+          content\": fileContent\n        }\n    }\n"
+        code_language: python3
+        desc: ''
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1746710668148'
+        outputs:
+          result:
+            children: null
+            type: object
+        selected: false
+        title: コード実行
+        type: code
+        variables:
+        - value_selector:
+          - '1746710668148'
+          - item
+          - name
+          variable: fileName
+        - value_selector:
+          - '1746710835189'
+          - FileContent
+          variable: fileContent
+      height: 54
+      id: '1746711834267'
+      parentId: '1746710668148'
+      position:
+        x: 1116
+        y: 148
+      positionAbsolute:
+        x: 1450
+        y: 579.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      zIndex: 1002
     - data:
         context:
           enabled: false
           variable_selector: []
         desc: ''
         model:
-          completion_params:
-            temperature: 0.7
+          completion_params: {}
           mode: chat
-          name: gpt-4
+          name: gpt-4o
           provider: langgenius/openai/openai
         prompt_template:
-        - id: c042bff8-54b1-460d-8ff7-9f4d2a4b4464
-          role: system
+        - role: system
           text: '{{#sys.query#}}
 
-            {{#1746629201774.renamed_files#}}'
+            {{#1746710668148.output#}}'
         selected: false
         title: LLM
         type: llm
         variables: []
         vision:
+          configs:
+            detail: high
+            variable_selector:
+            - sys
+            - files
           enabled: false
       height: 90
-      id: '1746628575675'
+      id: '1746712088521'
       position:
-        x: 638
-        y: 252.5
+        x: 1814
+        y: 431.5
       positionAbsolute:
-        x: 638
-        y: 252.5
+        x: 1814
+        y: 431.5
       selected: false
       sourcePosition: right
       targetPosition: left
       type: custom
       width: 244
-    - data:
-        code: "import os\nimport requests\n\ndef main(uploaded_files: list) -> dict:\n\
-          \    # 環境変数から URL プレフィックスと API キーを取得\n    base_url = 'http://api:5001'\n\
-          \n    renamed = []\n    for f in uploaded_files:\n        # f['remote_url']\
-          \ は \"/files/xxxx?...\" の形式\n        file_url = f\"{base_url}{f['remote_url']}\"\
-          \n        resp = requests.get(file_url)\n        resp.raise_for_status()\n\
-          \n        original = f.get('filename') or 'file'\n        new_name = f\"\
-          renamed_{original}\"\n\n        renamed.append({\n            'filename':\
-          \ new_name,        # ここでリネーム\n            'content': resp.text,     # テキストデータ\n\
-          \            'mime_type': f.get('mime_type')\n        })\n\n    # 出力変数に返却\n\
-          \    return {'renamed_files': renamed}"
-        code_language: python3
-        desc: ''
-        outputs:
-          renamed_files:
-            children: null
-            type: array[object]
-        selected: true
-        title: コード実行（テキスト読み出し）
-        type: code
-        variables:
-        - value_selector:
-          - sys
-          - files
-          variable: uploaded_files
-      height: 54
-      id: '1746629201774'
-      position:
-        x: 334
-        y: 252.5
-      positionAbsolute:
-        x: 334
-        y: 252.5
-      selected: true
-      sourcePosition: right
-      targetPosition: left
-      type: custom
-      width: 244
     viewport:
-      x: -130
-      y: 125
+      x: 0
+      y: 0
       zoom: 0.7
