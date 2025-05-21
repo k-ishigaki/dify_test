@@ -1,0 +1,37 @@
+identity:
+  name: file_downloader
+  author: k-ishigaki
+  label:
+    en_US: File Downloader
+    ja_JP: ファイルダウンローダー
+description:
+  human:
+    en_US: Downloads a binary file from the specified URL and returns it using the original MIME type.
+    ja_JP: 指定した URL からバイナリをダウンロードし、元の MIME タイプで返します。
+  llm: Downloads a binary file from the specified URL and returns it using the original MIME type.
+parameters:
+  - name: url
+    type: string
+    required: true
+    label:
+      en_US: Download URL
+      ja_JP: ダウンロード URL
+    human_description:
+      en_US: The URL of the file you want to download.
+      ja_JP: ダウンロードしたいファイルの URL。
+    llm_description: The URL of the file to download.
+    form: llm
+  - name: filename
+    type: string
+    required: false
+    label:
+      en_US: File Name
+      ja_JP: ファイル名
+    human_description:
+      en_US: Optional name to assign to the downloaded file.
+      ja_JP: ダウンロードファイルに付ける任意のファイル名。
+    llm_description: Optional name to assign to the downloaded file.
+    form: llm
+extra:
+  python:
+    source: tools/file_downloader.py

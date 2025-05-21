@@ -1,0 +1,15 @@
+identity:
+  author: k-ishigaki
+  name: file_downloader
+  label:
+    en_US: File Downloader
+    ja_JP: ファイルダウンローダー
+  description:
+    en_US: Downloads a binary file from the specified URL and returns it with the original MIME type.
+    ja_JP: 指定した URL からバイナリをダウンロードし、元の MIME タイプで返します。
+  icon: icon.svg
+tools:
+  - tools/file_downloader.yaml
+extra:
+  python:
+    source: provider/file_downloader.py
