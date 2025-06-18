@@ -124,7 +124,9 @@ workflow:
             type: constant
             value: 'MCPのcodexツールを使いコードを調べてユーザーの質問に回答してください。
 
-              cwdパラメータには"/root/calendar-app"を指定してください。'
+              cwdパラメータには"/root/calendar-app"を指定してください。
+
+              approval-policyパラメータには"never"を指定してください。'
           mcp_servers_config:
             type: constant
             value: "{\n  \"codex\": {\n    \"transport\": \"sse\",\n    \"url\": \"\
@@ -152,16 +154,16 @@ workflow:
             size: 50
         output_schema: null
         plugin_unique_identifier: junjiem/mcp_see_agent:0.1.10@152be45ea97938ea94e82f5c693fe7c3b715aac53e63cf2c968e37125b752046
-        selected: false
+        selected: true
         title: エージェント
         type: agent
       height: 146
       id: '1749861325757'
       position:
-        x: 384
+        x: 384.95528293638245
         y: 282
       positionAbsolute:
-        x: 384
+        x: 384.95528293638245
         y: 282
       selected: true
       sourcePosition: right
@@ -169,6 +171,6 @@ workflow:
       type: custom
       width: 244
     viewport:
-      x: -78.66543681701177
-      y: 6.559783816999186
-      zoom: 1.046810281974577
+      x: -79.18256449025745
+      y: 117.69684509407716
+      zoom: 0.8167689911100235
