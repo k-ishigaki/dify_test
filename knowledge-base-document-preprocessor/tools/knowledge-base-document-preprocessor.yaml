@@ -1,0 +1,58 @@
+identity:
+  name: "knowledge-base-document-preprocessor"
+  author: "k-ishigaki"
+  label:
+    en_US: "knowledge-base-document-preprocessor"
+    zh_Hans: "knowledge-base-document-preprocessor"
+    pt_BR: "knowledge-base-document-preprocessor"
+description:
+  human:
+    en_US: "Knowledge Base Document Preprocessor for Dify"
+    zh_Hans: "Knowledge Base Document Preprocessor for Dify"
+    pt_BR: "Knowledge Base Document Preprocessor for Dify"
+  llm: "Knowledge Base Document Preprocessor for Dify"
+parameters:
+  - name: input_file
+    type: file
+    required: true
+    label:
+      en_US: "Input File"
+      zh_Hans: "Input File"
+      pt_BR: "Input File"
+    human_description:
+      en_US: "Input File"
+      zh_Hans: "Input File"
+      pt_BR: "Input File"
+    llm_description: "Input File"
+    form: llm
+  - name: max_chunk_length
+    type: number
+    required: true
+    label:
+      en_US: "Max chunk length (characters)"
+      zh_Hans: "Max chunk length (characters)"
+      pt_BR: "Max chunk length (characters)"
+    human_description:
+      en_US: "Max chunk length (characters)"
+      zh_Hans: "Max chunk length (characters)"
+      pt_BR: "Max chunk length (characters)"
+    llm_description: "Max chunk length (characters)"
+    form: llm
+    default: 1024
+  - name: split_max_level
+    type: number
+    required: true
+    label:
+      en_US: "Preferential split up to heading level"
+      zh_Hans: "Preferential split up to heading level"
+      pt_BR: "Preferential split up to heading level"
+    human_description:
+      en_US: "Preferential split up to heading level"
+      zh_Hans: "Preferential split up to heading level"
+      pt_BR: "Preferential split up to heading level"
+    llm_description: "Preferential split up to heading level"
+    form: llm
+    default: 3
+extra:
+  python:
+    source: tools/knowledge-base-document-preprocessor.py
