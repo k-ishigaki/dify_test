@@ -1,0 +1,109 @@
+app:
+  description: Agent of Dify References.
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: agent-chat
+  name: Dify References Agent
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/openai:0.2.5@373362a028986aae53a7baf73a7f11991ba3c22c69eaf97d6cde048cfd4a9f98
+kind: app
+model_config:
+  agent_mode:
+    enabled: true
+    max_iteration: 10
+    prompt: null
+    strategy: function_call
+    tools: []
+  annotation_reply:
+    enabled: false
+  chat_prompt_config: {}
+  completion_prompt_config: {}
+  dataset_configs:
+    datasets:
+      datasets:
+      - dataset:
+          enabled: true
+          id: 00a14884-b6d5-4a09-910e-6baf0d93f331
+    metadata_filtering_mode: disabled
+    metadata_model_config:
+      completion_params:
+        temperature: 0.7
+      mode: chat
+      name: gpt-5-nano
+      provider: langgenius/openai/openai
+    reranking_enable: false
+    reranking_mode: reranking_model
+    reranking_model:
+      reranking_model_name: bge-reranker-v2-m3
+      reranking_provider_name: langgenius/xinference/xinference
+    retrieval_model: multiple
+    top_k: 4
+  dataset_query_variable: ''
+  external_data_tools: []
+  file_upload:
+    allowed_file_extensions:
+    - .JPG
+    - .JPEG
+    - .PNG
+    - .GIF
+    - .WEBP
+    - .SVG
+    - .MP4
+    - .MOV
+    - .MPEG
+    - .WEBM
+    allowed_file_types:
+    - image
+    allowed_file_upload_methods:
+    - remote_url
+    - local_file
+    enabled: true
+    image:
+      detail: high
+      enabled: true
+      number_limits: 3
+      transfer_methods:
+      - remote_url
+      - local_file
+    number_limits: 3
+  model:
+    completion_params:
+      stop: []
+    mode: chat
+    name: gpt-5-mini
+    provider: langgenius/openai/openai
+  more_like_this:
+    enabled: false
+  opening_statement: Welcome! I’m a friendly yet professional assistant specializing
+    in all things Dify. Ask me anything about building, deploying, or troubleshooting
+    Dify projects, and I’ll guide you step-by-step. If your question isn’t Dify-related,
+    I’ll still draw on my broader knowledge to help. How can I assist you today?
+  pre_prompt: "```xml\n<instruction>\nあなたは Dify に精通したエージェントです。以下の手順と制約に従って、ユーザーからの質問に回答してください。最終的な回答には絶対に\
+    \ xml タグを含めないでください。\n\n手順:\n1. ユーザーの質問を読み取る。\n2. 質問が Dify に関係しないと判断した場合  \n  \
+    \ a. あなた自身の知識だけで質問に回答する。  \n   b. その時点で処理を終了する。  \n3. 質問が Dify に関係すると判断した場合  \n\
+    \   a. Dify Reference ナレッジベースに英語の検索クエリを送信し、回答を取得する。  \n      - 一度に複数の内容を尋ねず、質問は単一のトピックに分割してクエリすること。\
+    \  \n   b. 必要に応じてクエリを調整し、最大 3 回まで再問い合わせして情報を補完する。  \n4. 3 回問い合わせても十分な情報が得られなかった場合\
+    \  \n   - 「必要な情報を取得できませんでした。」という旨を日本語で出力する。  \n5. 十分な情報が得られた場合  \n   - 得られた情報を日本語で分かりやすく整理し、ユーザーへ回答する。\
+    \  \n6. 出力は平文のみとし、xml タグは一切含めないこと。  \n</instruction>\n\n```"
+  prompt_type: simple
+  retriever_resource:
+    enabled: true
+  sensitive_word_avoidance:
+    configs: []
+    enabled: false
+    type: ''
+  speech_to_text:
+    enabled: false
+  suggested_questions: []
+  suggested_questions_after_answer:
+    enabled: false
+  text_to_speech:
+    enabled: false
+    language: ''
+    voice: ''
+  user_input_form: []
+version: 0.4.0
