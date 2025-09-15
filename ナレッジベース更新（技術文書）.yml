@@ -1,0 +1,504 @@
+app:
+  description: ファイルに技術文書向けの処理を施してナレッジベースにアップロードします。
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: workflow
+  name: ナレッジベース更新（技術文書）
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: package
+  value:
+    plugin_unique_identifier: k-ishigaki/knowledge-base-document-preprocessor:0.0.1@e1d5b9a754a17c5ad551ab75c895a8a477dd35634cf606137c22b586b0b364f0
+kind: app
+version: 0.4.0
+workflow:
+  conversation_variables: []
+  environment_variables:
+  - description: DifyのナレッジベースのAPIキー
+    id: b04343a2-bd81-45da-bfe8-71652a5789e6
+    name: api_key
+    selector:
+    - env
+    - api_key
+    value: ''
+    value_type: secret
+  - description: デリミタ識別子
+    id: fc3e40b2-88d9-455e-949e-20a01990176e
+    name: delimiter_identifier
+    selector:
+    - env
+    - delimiter_identifier
+    value: '---DIFY-CHUNK---'
+    value_type: string
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        audio_file_size_limit: 50
+        batch_count_limit: 50
+        file_size_limit: 150
+        image_file_size_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: iteration
+        targetType: end
+      id: 1757827250685-source-1757826348753-target
+      selected: false
+      source: '1757827250685'
+      sourceHandle: source
+      target: '1757826348753'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1757827250685'
+        sourceType: iteration-start
+        targetType: tool
+      id: 1757827250685start-source-1757844563196-target
+      selected: false
+      source: 1757827250685start
+      sourceHandle: source
+      target: '1757844563196'
+      targetHandle: target
+      type: custom
+      zIndex: 1002
+    - data:
+        isInLoop: false
+        sourceType: start
+        targetType: iteration
+      id: 1757825621219-source-1757827250685-target
+      selected: false
+      source: '1757825621219'
+      sourceHandle: source
+      target: '1757827250685'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1757827250685'
+        sourceType: tool
+        targetType: code
+      id: 1757844563196-source-1757849527457-target
+      source: '1757844563196'
+      sourceHandle: source
+      target: '1757849527457'
+      targetHandle: target
+      type: custom
+      zIndex: 1002
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: 開始
+        type: start
+        variables:
+        - label: DifyのデータセットID
+          max_length: 48
+          options: []
+          required: true
+          type: text-input
+          variable: dataset_id
+        - allowed_file_extensions: []
+          allowed_file_types:
+          - document
+          allowed_file_upload_methods:
+          - local_file
+          - remote_url
+          label: ナレッジベースに登録したいファイルリスト
+          max_length: 10
+          options: []
+          required: true
+          type: file-list
+          variable: files
+        - default: '1024'
+          label: 最大チャンク長（最大4000まで）
+          max_length: 48
+          options: []
+          required: false
+          type: number
+          variable: max_chunk_length
+        - default: '3'
+          label: 優先的に区切られる、見出しレベルの最大値
+          max_length: null
+          options: []
+          required: false
+          type: number
+          variable: split_max_level
+      height: 168
+      id: '1757825621219'
+      position:
+        x: 30
+        y: 287
+      positionAbsolute:
+        x: 30
+        y: 287
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        outputs:
+        - value_selector:
+          - '1757827250685'
+          - output
+          value_type: array[file]
+          variable: output
+        selected: false
+        title: 終了
+        type: end
+      height: 90
+      id: '1757826348753'
+      position:
+        x: 1206
+        y: 287
+      positionAbsolute:
+        x: 1206
+        y: 287
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        error_handle_mode: terminated
+        height: 174
+        is_parallel: false
+        iterator_input_type: array[file]
+        iterator_selector:
+        - '1757825621219'
+        - files
+        output_selector:
+        - '1757844563196'
+        - files
+        output_type: array[file]
+        parallel_nums: 10
+        selected: false
+        start_node_id: 1757827250685start
+        title: イテレーション
+        type: iteration
+        width: 812
+      height: 174
+      id: '1757827250685'
+      position:
+        x: 334
+        y: 287
+      positionAbsolute:
+        x: 334
+        y: 287
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 812
+      zIndex: 1
+    - data:
+        desc: ''
+        isInIteration: true
+        selected: false
+        title: ''
+        type: iteration-start
+      draggable: false
+      height: 48
+      id: 1757827250685start
+      parentId: '1757827250685'
+      position:
+        x: 60
+        y: 63
+      positionAbsolute:
+        x: 394
+        y: 350
+      selectable: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom-iteration-start
+      width: 44
+      zIndex: 1002
+    - data:
+        desc: ''
+        error_strategy: fail-branch
+        isInIteration: true
+        isInLoop: false
+        is_team_authorization: true
+        iteration_id: '1757827250685'
+        output_schema: null
+        paramSchemas:
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Input File
+            ja_JP: Input File
+            pt_BR: Input File
+            zh_Hans: Input File
+          label:
+            en_US: Input File
+            ja_JP: Input File
+            pt_BR: Input File
+            zh_Hans: Input File
+          llm_description: Input File
+          max: null
+          min: null
+          name: input_file
+          options: []
+          placeholder: null
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: file
+        - auto_generate: null
+          default: 1024
+          form: llm
+          human_description:
+            en_US: Max chunk length (characters)
+            ja_JP: Max chunk length (characters)
+            pt_BR: Max chunk length (characters)
+            zh_Hans: Max chunk length (characters)
+          label:
+            en_US: Max chunk length (characters)
+            ja_JP: Max chunk length (characters)
+            pt_BR: Max chunk length (characters)
+            zh_Hans: Max chunk length (characters)
+          llm_description: Max chunk length (characters)
+          max: null
+          min: null
+          name: max_chunk_length
+          options: []
+          placeholder: null
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: number
+        - auto_generate: null
+          default: 3
+          form: llm
+          human_description:
+            en_US: Preferential split up to heading level
+            ja_JP: Preferential split up to heading level
+            pt_BR: Preferential split up to heading level
+            zh_Hans: Preferential split up to heading level
+          label:
+            en_US: Preferential split up to heading level
+            ja_JP: Preferential split up to heading level
+            pt_BR: Preferential split up to heading level
+            zh_Hans: Preferential split up to heading level
+          llm_description: Preferential split up to heading level
+          max: null
+          min: null
+          name: split_max_level
+          options: []
+          placeholder: null
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: number
+        params:
+          input_file: ''
+          max_chunk_length: ''
+          split_max_level: ''
+        provider_id: k-ishigaki/knowledge-base-document-preprocessor/knowledge-base-document-preprocessor
+        provider_name: k-ishigaki/knowledge-base-document-preprocessor/knowledge-base-document-preprocessor
+        provider_type: builtin
+        selected: false
+        title: knowledge-base-document-preprocessor
+        tool_configurations: {}
+        tool_description: Knowledge Base Document Preprocessor for Dify
+        tool_label: knowledge-base-document-preprocessor
+        tool_name: knowledge-base-document-preprocessor
+        tool_node_version: '2'
+        tool_parameters:
+          input_file:
+            type: variable
+            value:
+            - '1757827250685'
+            - item
+          max_chunk_length:
+            type: variable
+            value:
+            - '1757825621219'
+            - max_chunk_length
+          split_max_level:
+            type: variable
+            value:
+            - '1757825621219'
+            - split_max_level
+        type: tool
+      height: 90
+      id: '1757844563196'
+      parentId: '1757827250685'
+      position:
+        x: 204
+        y: 60
+      positionAbsolute:
+        x: 538
+        y: 347
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      zIndex: 1002
+    - data:
+        code: "# Code node entrypoint\n# inputs: Dict[str, Any] が与えられます。ここでは \"File\"\
+          （DifyのFile型）を使用します。\n# 返り値は Dict[str, Any] を返してください。\n\nimport requests\n\
+          import json\nimport mimetypes\nfrom typing import Any, Dict, Tuple, Optional,\
+          \ List\n\n# === 設定 ===\nAPI_BASE = \"http://localhost\"\nDATASET_ID = \"\
+          0522bfbb-5b4f-47fc-a245-04c5f2c80f23\"  # 例示のcurlと同じ\nDATASET_API_KEY =\
+          \ \"dataset-MCMpMuLPZx3cPw0PfRClo7wf\"  # 例示のcurlと同じ\n\ndef _pick_first_file(file_input:\
+          \ Any) -> Dict[str, Any]:\n    # File型は単一オブジェクトまたは配列で渡される可能性があるため吸収\n  \
+          \  if isinstance(file_input, list):\n        if not file_input:\n      \
+          \      raise ValueError(\"File input list is empty.\")\n        return file_input[0]\n\
+          \    elif isinstance(file_input, dict):\n        return file_input\n   \
+          \ else:\n        raise TypeError(\"Invalid File input type. Expected dict\
+          \ or list of dict.\")\n\ndef _extract_file_info(f: Dict[str, Any]) -> Tuple[str,\
+          \ str, str]:\n    # DifyのFileオブジェクトにありがちURLキーを順に探索\n    url = (\n      \
+          \  f.get(\"url\")\n        or f.get(\"signed_url\")\n        or f.get(\"\
+          download_url\")\n        or f.get(\"remote_url\")\n    )\n    if not url:\n\
+          \        raise ValueError(\"No downloadable URL found in the File object.\"\
+          )\n\n    # ファイル名・MIMEタイプを推定\n    name = f.get(\"name\") or f.get(\"filename\"\
+          ) or \"upload.bin\"\n    mime = (\n        f.get(\"mime_type\")\n      \
+          \  or f.get(\"mimetype\")\n        or mimetypes.guess_type(name)[0]\n  \
+          \      or \"application/octet-stream\"\n    )\n    return url, name, mime\n\
+          \ndef _download_file(file_url: str, timeout: int = 120) -> bytes:\n    r\
+          \ = requests.get(file_url, timeout=timeout)\n    r.raise_for_status()\n\
+          \    return r.content\n\ndef main(input_files: List[Dict[str, Any]], api_key:\
+          \ str, dataset_id: str, max_chunk_length: float, delimiter_identifier: str)\
+          \ -> Dict[str, Any]:\n    \"\"\"files は JSON 配列で渡ってくる形に合わせて修正\"\"\"\n  \
+          \  try:\n        if not input_files:\n            return {\n           \
+          \     \"ok\": False,\n                \"error\": \"Input variable 'files'\
+          \ is required and must not be empty.\"\n            }\n\n        file_obj\
+          \ = _pick_first_file(input_files)\n        file_url, file_name, mime_type\
+          \ = _extract_file_info(file_obj)\n        file_bytes = _download_file(file_url)\n\
+          \n        # curl の data=... に相当するメタデータ（JSON文字列）\n        payload = {\n \
+          \           \"indexing_technique\": \"high_quality\",\n            \"doc_form\"\
+          : \"hierarchical_model\",\n            \"process_rule\": {\n           \
+          \     \"mode\": \"hierarchical\",\n                \"rules\": {\n      \
+          \              \"pre_processing_rules\": [\n                        {\"\
+          id\": \"remove_extra_spaces\", \"enabled\": True},\n                   \
+          \     {\"id\": \"remove_urls_emails\", \"enabled\": False},\n          \
+          \          ],\n                    \"segmentation\": {\"separator\": delimiter_identifier,\
+          \ \"max_tokens\": max_chunk_length},\n                    \"parent_mode\"\
+          : \"paragraph\",\n                    \"subchunk_segmentation\": {\"separator\"\
+          : \"\\n\\n\", \"max_tokens\": 512},\n                },\n            },\n\
+          \        }\n\n        url = f\"http://host.docker.internal/v1/datasets/{dataset_id}/document/create-by-file\"\
+          \n        headers = {\n            \"Authorization\": f\"Bearer {api_key}\"\
+          ,\n        }\n\n        # multipart/form-data の構築\n        multipart_files\
+          \ = {\n            \"data\": (None, json.dumps(payload), \"text/plain\"\
+          ),\n            \"file\": (file_name, file_bytes, mime_type),\n        }\n\
+          \n        resp = requests.post(url, headers=headers, files=multipart_files,\
+          \ timeout=300)\n\n        # レスポンスを可能ならJSONで返す\n        try:\n          \
+          \  resp_json = resp.json()\n            return {\n                \"result\"\
+          : \"ok\",\n                \"description\": f\"{resp_json}\",\n        \
+          \    }\n        except ValueError:\n            return {\n             \
+          \   \"result\": \"ng\",\n                \"description\": resp.status_code\
+          \ + resp.text\n            }\n\n    except Exception as e:\n        return\
+          \ {\n            \"result\": \"ng\",\n            \"description\": str(e)\n\
+          \        }"
+        code_language: python3
+        desc: ''
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1757827250685'
+        outputs:
+          description:
+            children: null
+            type: string
+          result:
+            children: null
+            type: string
+        selected: false
+        title: Code
+        type: code
+        variables:
+        - value_selector:
+          - '1757844563196'
+          - files
+          value_type: array[file]
+          variable: input_files
+        - value_selector:
+          - env
+          - api_key
+          value_type: secret
+          variable: api_key
+        - value_selector:
+          - '1757825621219'
+          - dataset_id
+          value_type: string
+          variable: dataset_id
+        - value_selector:
+          - '1757825621219'
+          - max_chunk_length
+          value_type: number
+          variable: max_chunk_length
+        - value_selector:
+          - env
+          - delimiter_identifier
+          value_type: string
+          variable: delimiter_identifier
+      height: 54
+      id: '1757849527457'
+      parentId: '1757827250685'
+      position:
+        x: 508
+        y: 60
+      positionAbsolute:
+        x: 842
+        y: 347
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      zIndex: 1002
+    viewport:
+      x: -241.47930828388678
+      y: 68.71551218096488
+      zoom: 0.6874977166843738
