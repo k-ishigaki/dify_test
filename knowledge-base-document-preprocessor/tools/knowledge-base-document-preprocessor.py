@@ -2,6 +2,7 @@ from collections.abc import Generator, Iterable
 from typing import Any
 
 import io
+import json
 import os
 import re
 import tempfile
@@ -22,6 +23,91 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 if plugin_logger_handler not in logger.handlers:
     logger.addHandler(plugin_logger_handler)
+
+
+def _split_table_row(line: str) -> list[str]:
+    """Markdown の表行をセルごとのリストに分解する。"""
+    stripped = line.strip()
+    if not stripped:
+        return []
+    if stripped.startswith("|"):
+        stripped = stripped[1:]
+    if stripped.endswith("|"):
+        stripped = stripped[:-1]
+    return [cell.strip() for cell in stripped.split("|")]
+
+
+_ALIGN_CELL_PATTERN = re.compile(r"^:?-{3,}:?$")
+
+
+def _is_table_row(line: str) -> bool:
+    stripped = line.strip()
+    return stripped.startswith("|") and stripped.count("|") >= 1
+
+
+def _is_table_header(line: str) -> bool:
+    return len(_split_table_row(line)) >= 2
+
+
+def _is_alignment_line(line: str, expected_cols: int) -> bool:
+    if not _is_table_row(line):
+        return False
+    cells = _split_table_row(line)
+    if len(cells) != expected_cols:
+        return False
+    return all(_ALIGN_CELL_PATTERN.match(cell.replace(" ", "")) for cell in cells)
+
+
+def _normalize_markdown_tables(md_text: str) -> str:
+    """Markdown の表を JSON 行のコードブロックに正規化する。"""
+    lines = md_text.splitlines()
+    result: list[str] = []
+    in_code_block = False
+    i = 0
+
+    while i < len(lines):
+        line = lines[i]
+        stripped = line.strip()
+
+        if stripped.startswith("```"):
+            in_code_block = not in_code_block
+            result.append(line)
+            i += 1
+            continue
+
+        if not in_code_block and _is_table_row(line) and _is_table_header(line):
+            header_cells = _split_table_row(line)
+            if header_cells and i + 1 < len(lines) and _is_alignment_line(lines[i + 1], len(header_cells)):
+                data_rows: list[list[str]] = []
+                j = i + 2
+                while j < len(lines):
+                    candidate = lines[j]
+                    if candidate.strip() == "":
+                        break
+                    if not _is_table_row(candidate):
+                        break
+                    row_cells = _split_table_row(candidate)
+                    if len(row_cells) != len(header_cells):
+                        break
+                    data_rows.append(row_cells)
+                    j += 1
+
+                if data_rows:
+                    result.append("```json")
+                    for row in data_rows:
+                        obj = {header_cells[idx]: row[idx] for idx in range(len(header_cells))}
+                        result.append(json.dumps(obj, ensure_ascii=False))
+                    result.append("```")
+                    i = j
+                    continue
+
+        result.append(line)
+        i += 1
+
+    normalized = "\n".join(result)
+    if md_text.endswith("\n"):
+        normalized += "\n"
+    return normalized
 
 
 def _convert_to_markdown_bytes(in_bytes: bytes, filename_hint: str | None = None) -> str:
@@ -219,6 +305,9 @@ class KnowledgeBaseDocumentPreprocessorTool(Tool):
 
         # 2) markitdown で Markdown テキストへ
         md_text: str = _convert_to_markdown_bytes(in_bytes, filename_hint=in_name)
+
+        # 2.5) Markdown 表を JSON 行へ正規化
+        md_text = _normalize_markdown_tables(md_text)
 
         # 3) 1パスで分割 + プレフィックス付与
         lines = io.StringIO(md_text).readlines()
