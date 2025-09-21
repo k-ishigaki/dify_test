@@ -136,8 +136,9 @@ def _convert_to_markdown_bytes(in_bytes: bytes, filename_hint: str | None = None
 class DataPathTracker:
     """Track heading stack and format the current data-path marker."""
 
-    def __init__(self) -> None:
+    def __init__(self, filename: str | None = None) -> None:
         self._segments: list[str] = []
+        self._filename = filename or ""
 
     def current_marker(self, first_line: str | None = None) -> str:
         """現在のスタックとチャンク先頭行を反映した data-path を返す。"""
@@ -152,7 +153,11 @@ class DataPathTracker:
         def sanitize(text: str) -> str:
             return text.replace("\\", "\\\\").replace('"', '\\"').strip()
 
-        joined = " > ".join(f'"{sanitize(segment)}"' for segment in segments)
+        parts: list[str] = []
+        if self._filename:
+            parts.append(f'"{sanitize(self._filename)}"')
+        parts.extend(f'"{sanitize(segment)}"' for segment in segments)
+        joined = " > ".join(parts)
         return f"{{ data-path = {joined} }}"
 
     def ingest_line(self, line: str) -> None:
@@ -164,7 +169,9 @@ class DataPathTracker:
         title = match.group(2).strip()
         self._segments = self._segments[: level - 1] + [title]
 
-def _split_and_prefix(lines: Iterable[str], max_chunk_length: int, split_max_level: int) -> Iterable[str]:
+def _split_and_prefix(
+    lines: Iterable[str], max_chunk_length: int, split_max_level: int, source_name: str | None = None
+) -> Iterable[str]:
     """
     1パスで分割とマーカー付与を実施する。
     - チャンク先頭: data-path マーカーを独立行として出力する。
@@ -173,7 +180,7 @@ def _split_and_prefix(lines: Iterable[str], max_chunk_length: int, split_max_lev
     - 長さ計算: チャンク1行目には data-path マーカー長も含めてカウントする。
     """
 
-    tracker = DataPathTracker()
+    tracker = DataPathTracker(filename=source_name)
 
     lines_list = list(lines)
     total_lines = len(lines_list)
@@ -315,6 +322,7 @@ class KnowledgeBaseDocumentPreprocessorTool(Tool):
             lines,
             max_chunk_length=max_chunk_length,
             split_max_level=split_max_level,
+            source_name=os.path.splitext(os.path.basename(in_name))[0],
         )
 
         # 4) 逐次書き出して bytes 化（UTF-8）
