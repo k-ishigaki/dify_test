@@ -1,19 +1,27 @@
-from collections.abc import Generator
+from collections.abc import Generator, Iterable
 from typing import Any
-
-from dify_plugin import Tool
-from dify_plugin.entities.tool import ToolInvokeMessage
 
 import io
 import os
 import re
 import tempfile
-from typing import Any, Generator, Iterable, Tuple
 
+import logging
+
+from dify_plugin import Tool
+from dify_plugin.config.logger_format import plugin_logger_handler
+from dify_plugin.entities.tool import ToolInvokeMessage
 from markitdown import MarkItDown
 
 
 DELIM = "---DIFY-CHUNK---"
+HEADING_PATTERN = re.compile(r"^(#{1,6})\s+(.*)")
+
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+if plugin_logger_handler not in logger.handlers:
+    logger.addHandler(plugin_logger_handler)
 
 
 def _convert_to_markdown_bytes(in_bytes: bytes, filename_hint: str | None = None) -> str:
@@ -39,129 +47,155 @@ def _convert_to_markdown_bytes(in_bytes: bytes, filename_hint: str | None = None
             pass
 
 
-def _format_datapath_marker(segments: list[str]) -> str:
-    """
-    data-path マーカーを生成する。
-    形式: { data-path = "H1" > "H2" > ... }
-    引用符や制御文字を簡易サニタイズする。
-    """
-    def sanitize(s: str) -> str:
-        # バックスラッシュと二重引用符をエスケープし、前後空白を除去
-        s = s.replace("\\", "\\\\").replace('"', '\\"').strip()
-        return s
+class DataPathTracker:
+    """Track heading stack and format the current data-path marker."""
 
-    joined = " > ".join(f'"{sanitize(x)}"' for x in segments)
-    # セグメントが空の場合は空の右辺を維持（= の後は空）
-    return f"{{ data-path = {joined} }}"
+    def __init__(self) -> None:
+        self._segments: list[str] = []
 
+    def current_marker(self, first_line: str | None = None) -> str:
+        """現在のスタックとチャンク先頭行を反映した data-path を返す。"""
+        segments = self._segments[:]
+        if first_line:
+            match = HEADING_PATTERN.match(first_line)
+            if match:
+                level = len(match.group(1))
+                title = match.group(2).strip()
+                segments = segments[: level - 1] + [title]
+
+        def sanitize(text: str) -> str:
+            return text.replace("\\", "\\\\").replace('"', '\\"').strip()
+
+        joined = " > ".join(f'"{sanitize(segment)}"' for segment in segments)
+        return f"{{ data-path = {joined} }}"
+
+    def ingest_line(self, line: str) -> None:
+        """行が見出しならスタックを更新する。"""
+        match = HEADING_PATTERN.match(line)
+        if not match:
+            return
+        level = len(match.group(1))
+        title = match.group(2).strip()
+        self._segments = self._segments[: level - 1] + [title]
 
 def _split_and_prefix(lines: Iterable[str], max_chunk_length: int, split_max_level: int) -> Iterable[str]:
     """
-    1パスで分割とプレフィックス付与を実施する。
-    - チャンク先頭: 先頭チャンクは `{ data-path = ... }`、以降は
-      `---DIFY-CHUNK---{ data-path = ... }` を行頭に付与し、そのまま1行目に
-      連結する（改行・空白は挟まない）。
-    - 分割ポリシー: 見出し(<= split_max_level) > 空行 > 改行（長さ超過）
-    - 長さ計算: チャンク1行目にはプレフィックス長も含めてカウントする。
+    1パスで分割とマーカー付与を実施する。
+    - チャンク先頭: data-path マーカーを独立行として出力する。
+    - チャンク終端: 次チャンクが続く場合は最終行として `---DIFY-CHUNK---` を追加する。
+    - 分割ポリシー: 見出し(<= split_max_level) > 空行 > 非インデント行 > 改行（長さ超過）
+    - 長さ計算: チャンク1行目には data-path マーカー長も含めてカウントする。
     """
-    heading_re = re.compile(r'^(#{1,6})\s+(.*)')
-    path_stack: list[str] = []
 
-    buffer: list[str] = []
-    buffer_chars = 0
+    tracker = DataPathTracker()
+
+    lines_list = list(lines)
+    total_lines = len(lines_list)
+
+    chunk_lines: list[str] = []
+    chunk_marker = ""
+    chunk_content_chars = 0
     last_blank_idx = -1
-    is_first_chunk = True
-    current_prefix = ""
+    last_heading_idx = -1
+    last_nonindent_idx = -1
 
-    def compute_prefix_for_first_line(first_line: str, is_first: bool) -> str:
-        m = heading_re.match(first_line)
-        if m:
-            level = len(m.group(1))
-            title = m.group(2).strip()
-            tmp_stack = path_stack[: level - 1] + [title]
-            dp_marker = _format_datapath_marker(tmp_stack)
-        else:
-            dp_marker = _format_datapath_marker(path_stack)
-        if is_first:
-            return dp_marker
-        return f"{DELIM}{dp_marker}"
-
-    def emit_chunk(lines_chunk: list[str], prefix: str) -> Iterable[str]:
+    def emit_chunk(marker: str, lines_chunk: list[str], add_delimiter: bool) -> Iterable[str]:
+        """チャンクを吐き出し、必要なら区切りマーカーも追加する。"""
         if not lines_chunk:
             return
-        # 1行目にプレフィックスを結合
-        first = lines_chunk[0]
-        yield f"{prefix}{first}"
-        for l in lines_chunk[1:]:
-            yield l
+        yield f"{marker}\n"
+        for chunk_line in lines_chunk:
+            yield chunk_line
+            tracker.ingest_line(chunk_line)
+        if add_delimiter:
+            yield f"{DELIM}\n"
 
-    for line in lines:
-        m_head = heading_re.match(line)
-        # 見出しが分割対象かつバッファに内容があれば、現在のチャンクを出力して新チャンク開始
-        if m_head and len(m_head.group(1)) <= split_max_level and buffer:
-            for out in emit_chunk(buffer, current_prefix):
-                yield out
-            buffer = []
-            buffer_chars = 0
+    def reset_chunk_state() -> None:
+        nonlocal chunk_lines, chunk_marker, chunk_content_chars, last_blank_idx, last_heading_idx, last_nonindent_idx
+        chunk_lines = []
+        chunk_marker = ""
+        chunk_content_chars = 0
+        last_blank_idx = -1
+        last_heading_idx = -1
+        last_nonindent_idx = -1
+
+    def recompute_chunk_metadata() -> None:
+        nonlocal chunk_marker, chunk_content_chars, last_blank_idx, last_heading_idx, last_nonindent_idx
+        chunk_content_chars = sum(len(entry) for entry in chunk_lines)
+        if not chunk_lines:
+            chunk_marker = ""
             last_blank_idx = -1
-            is_first_chunk = False
-            # 新チャンク開始
-            current_prefix = compute_prefix_for_first_line(line, is_first_chunk)
-            buffer.append(line)
-            # 長さはプレフィックス長 + 1行目
-            buffer_chars = len(current_prefix) + len(line)
-            # 見出しに応じてスタック更新
-            level = len(m_head.group(1))
-            title = m_head.group(2).strip()
-            path_stack = path_stack[: level - 1] + [title]
-            continue
+            last_heading_idx = -1
+            last_nonindent_idx = -1
+            return
+        chunk_marker = tracker.current_marker(chunk_lines[0])
+        last_blank_idx = -1
+        last_heading_idx = -1
+        last_nonindent_idx = -1
+        for idx, buf_line in enumerate(chunk_lines):
+            if buf_line.strip() == "":
+                last_blank_idx = idx
+                continue
+            if idx > 0:
+                heading = HEADING_PATTERN.match(buf_line)
+                if heading and len(heading.group(1)) <= split_max_level:
+                    last_heading_idx = idx
+                if buf_line and not buf_line[0].isspace():
+                    last_nonindent_idx = idx
 
-        # ここまで来たら通常の追記
-        if not buffer:
-            # 新チャンク開始
-            current_prefix = compute_prefix_for_first_line(line, is_first_chunk)
-            buffer.append(line)
-            buffer_chars = len(current_prefix) + len(line)
-        else:
-            buffer.append(line)
-            buffer_chars += len(line)
-
-        # 見出しはスタックを更新（split_max_level 超でも更新）
-        if m_head:
-            level = len(m_head.group(1))
-            title = m_head.group(2).strip()
-            path_stack = path_stack[: level - 1] + [title]
-
-        # 空行の位置を記録
-        if line.strip() == "":
-            last_blank_idx = len(buffer) - 1
-
-        # 長さオーバーなら分割
-        if buffer_chars >= max_chunk_length:
-            cut_idx = last_blank_idx if last_blank_idx != -1 else len(buffer) - 1
-            left = buffer[:cut_idx + 1]
-            right = buffer[cut_idx + 1:]
-            # 左チャンク出力
-            for out in emit_chunk(left, current_prefix):
+    for idx, line in enumerate(lines_list):
+        heading_match = HEADING_PATTERN.match(line)
+        if chunk_lines and heading_match and len(heading_match.group(1)) <= split_max_level:
+            # 見出しで区切る条件を満たしたら現在のチャンクを確定させる
+            for out in emit_chunk(chunk_marker, chunk_lines, add_delimiter=True):
                 yield out
-            # 右チャンクを新しいチャンクとしてセット
-            buffer = right
-            is_first_chunk = False
-            if buffer:
-                current_prefix = compute_prefix_for_first_line(buffer[0], is_first_chunk)
-                buffer_chars = len(current_prefix) + sum(len(x) for x in buffer)
-                # 空行の再計算
-                last_blank_idx = -1
-                for i, l in enumerate(buffer):
-                    if l.strip() == "":
-                        last_blank_idx = i
-            else:
-                buffer_chars = 0
-                last_blank_idx = -1
+            reset_chunk_state()
 
-    # 残りを出力
-    if buffer:
-        for out in emit_chunk(buffer, current_prefix):
+        if not chunk_lines:
+            # 新しいチャンクの開始時点で data-path を決定する
+            chunk_marker = tracker.current_marker(line)
+            chunk_content_chars = 0
+            last_blank_idx = -1
+            last_heading_idx = -1
+            last_nonindent_idx = -1
+
+        chunk_lines.append(line)
+        chunk_content_chars += len(line)
+        idx_in_chunk = len(chunk_lines) - 1
+        if line.strip() == "":
+            last_blank_idx = idx_in_chunk
+        elif idx_in_chunk > 0:
+            if heading_match and len(heading_match.group(1)) <= split_max_level:
+                last_heading_idx = idx_in_chunk
+            if line and not line[0].isspace():
+                last_nonindent_idx = idx_in_chunk
+
+        is_last_line = idx == total_lines - 1
+
+        while chunk_lines:
+            chunk_length = len(chunk_marker) + 1 + chunk_content_chars
+            if chunk_length < max_chunk_length:
+                break
+            # 最大長を超えたので見出し→空行→インデント無し行の優先順でチャンクを分割する
+            if last_heading_idx > 0:
+                cut_idx = last_heading_idx - 1
+            elif last_blank_idx != -1:
+                cut_idx = last_blank_idx
+            elif last_nonindent_idx > 0:
+                cut_idx = last_nonindent_idx - 1
+            else:
+                cut_idx = len(chunk_lines) - 1
+            left_lines = chunk_lines[: cut_idx + 1]
+            right_lines = chunk_lines[cut_idx + 1 :]
+            add_delimiter = bool(right_lines) or not is_last_line
+            for out in emit_chunk(chunk_marker, left_lines, add_delimiter=add_delimiter):
+                yield out
+            chunk_lines = right_lines
+            recompute_chunk_metadata()
+
+    if chunk_lines:
+        # 最後のチャンクを出力
+        for out in emit_chunk(chunk_marker, chunk_lines, add_delimiter=False):
             yield out
 
 

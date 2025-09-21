@@ -38,7 +38,6 @@ parameters:
       pt_BR: "Max chunk length (characters)"
     llm_description: "Max chunk length (characters)"
     form: llm
-    default: 1024
   - name: split_max_level
     type: number
     required: true
@@ -52,7 +51,6 @@ parameters:
       pt_BR: "Preferential split up to heading level"
     llm_description: "Preferential split up to heading level"
     form: llm
-    default: 3
 extra:
   python:
     source: tools/knowledge-base-document-preprocessor.py
