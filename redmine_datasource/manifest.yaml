@@ -1,0 +1,35 @@
+version: 0.0.1
+type: plugin
+author: k-ishgiaki
+name: redmine_datasource
+label:
+  en_US: redmine_datasource
+  ja_JP: redmine_datasource
+  zh_Hans: redmine_datasource
+  pt_BR: redmine_datasource
+description:
+  en_US: Redmine Datasource
+  ja_JP: Redmine Datasource
+  zh_Hans: Redmine Datasource
+  pt_BR: Redmine Datasource
+icon: icon.svg
+icon_dark: icon-dark.svg
+resource:
+  memory: 268435456
+  permission: {}
+plugins:
+  datasources:
+    - provider/redmine_datasource.yaml
+meta:
+  version: 0.0.1
+  arch:
+    - amd64
+    - arm64
+  runner:
+    language: python
+    version: "3.12"
+    entrypoint: main
+  minimum_dify_version: 1.9.1
+created_at: 2025-10-11T17:20:42.063808+09:00
+privacy: PRIVACY.md
+verified: false

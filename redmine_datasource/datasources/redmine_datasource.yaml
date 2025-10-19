@@ -1,0 +1,76 @@
+identity:
+  name: "redmine_datasource"
+  author: "k-ishgiaki"
+  label:
+    en_US: "redmine_datasource"
+    zh_Hans: "redmine_datasource"
+    pt_BR: "redmine_datasource"
+    ja_JP: "redmine_datasource"
+description:
+  human:
+    en_US: "Redmine Datasource"
+    zh_Hans: "Redmine Datasource"
+    pt_BR: "Redmine Datasource"
+    ja_JP: "Redmine Datasource"
+  llm: "Redmine Datasource"
+
+# For website crawl, you can use the following code:
+parameters:
+  - name: query
+    type: string
+    required: true
+    label:
+      en_US: Query string
+      zh_Hans: 查询语句
+      pt_BR: Query string
+      ja_JP: クエリ文字列
+    human_description:
+      en_US: "Redmine Datasource"
+      zh_Hans: "Redmine Datasource"
+      pt_BR: "Redmine Datasource"
+      ja_JP: "Redmine Datasource"
+    llm_description: "Redmine Datasource"
+    form: llm
+output_schema:
+    type: object
+    properties:
+      source_url:
+        type: string
+        description: the source url of the website
+      content:
+        type: string
+        description: the content from the website
+      title:
+        type: string
+        description: the title of the website
+      "description":
+        type: string
+        description: the description of the website
+
+# For online document, you can use the following code:
+parameters:
+output_schema:
+    type: object
+    properties:
+      workspace_id:
+        type: string
+        description: workspace id
+      page_id:
+        type: string
+        description: page id
+      content:
+        type: string
+        description: page content
+
+
+# For online document, you can use the following code:
+parameters:
+output_schema:
+    type: object
+    properties:
+      file:
+        $ref: "https://dify.ai/schemas/v1/file.json"
+
+extra:
+  python:
+    source: datasources/redmine_datasource.py
