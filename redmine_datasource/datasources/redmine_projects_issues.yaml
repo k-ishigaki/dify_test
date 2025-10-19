@@ -1,0 +1,37 @@
+identity:
+  name: "redmine_projects_issues"
+  author: "k-ishgiaki"
+  label:
+    en_US: "Redmine Projects & Tickets"
+    ja_JP: "Redmine プロジェクトとチケット"
+    zh_Hans: "Redmine 项目与工单"
+    pt_BR: "Projetos e Tickets do Redmine"
+  icon: "icon.svg"
+
+description:
+  en_US: "List Redmine projects and their tickets for retrieval."
+  ja_JP: "Redmine のプロジェクトとチケットを取得します。"
+  zh_Hans: "列出 Redmine 项目及其工单供检索。"
+  pt_BR: "Lista projetos e tickets do Redmine para consulta."
+
+parameters: []
+
+output_schema:
+  type: object
+  properties:
+    workspace_id:
+      type: string
+      description: "Redmine instance identifier used as workspace id."
+    page_id:
+      type: string
+      description: "Unique page id, e.g. issue:123 or project:foo."
+    content:
+      type: string
+      description: "Primary content extracted from Redmine."
+    title:
+      type: string
+      description: "Page title, combines ticket id and subject."
+
+extra:
+  python:
+    source: datasources/redmine_datasource.py

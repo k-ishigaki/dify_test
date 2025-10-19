@@ -19,7 +19,7 @@ resource:
   permission: {}
 plugins:
   datasources:
-    - provider/redmine_datasource.yaml
+    - datasources/redmine_datasource.yaml
 meta:
   version: 0.0.1
   arch:

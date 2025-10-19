@@ -2,74 +2,47 @@ identity:
   name: "redmine_datasource"
   author: "k-ishgiaki"
   label:
-    en_US: "redmine_datasource"
-    zh_Hans: "redmine_datasource"
-    pt_BR: "redmine_datasource"
-    ja_JP: "redmine_datasource"
-description:
-  human:
-    en_US: "Redmine Datasource"
-    zh_Hans: "Redmine Datasource"
-    pt_BR: "Redmine Datasource"
-    ja_JP: "Redmine Datasource"
-  llm: "Redmine Datasource"
+    en_US: "Redmine"
+    ja_JP: "Redmine"
+    zh_Hans: "Redmine"
+    pt_BR: "Redmine"
+  description:
+    en_US: "Connect to Redmine and expose projects and issues as knowledge pages."
+    ja_JP: "Redmine に接続し、プロジェクトとチケットをナレッジページとして公開します。"
+    zh_Hans: "连接 Redmine，将项目与工单暴露为知识页面。"
+    pt_BR: "Conecta ao Redmine e expõe projetos e tickets como páginas de conhecimento."
+  icon: "icon.svg"
 
-# For website crawl, you can use the following code:
-parameters:
-  - name: query
-    type: string
+provider_type: "online_document"
+
+credentials_schema:
+  - name: base_url
+    type: text-input
     required: true
     label:
-      en_US: Query string
-      zh_Hans: 查询语句
-      pt_BR: Query string
-      ja_JP: クエリ文字列
-    human_description:
-      en_US: "Redmine Datasource"
-      zh_Hans: "Redmine Datasource"
-      pt_BR: "Redmine Datasource"
-      ja_JP: "Redmine Datasource"
-    llm_description: "Redmine Datasource"
-    form: llm
-output_schema:
-    type: object
-    properties:
-      source_url:
-        type: string
-        description: the source url of the website
-      content:
-        type: string
-        description: the content from the website
-      title:
-        type: string
-        description: the title of the website
-      "description":
-        type: string
-        description: the description of the website
+      en_US: "Redmine Base URL"
+      ja_JP: "Redmine ベースURL"
+      zh_Hans: "Redmine 基础 URL"
+      pt_BR: "URL base do Redmine"
+    placeholder:
+      en_US: "https://redmine.example.com"
+    help:
+      en_US: "Enter the root URL of your Redmine instance."
+  - name: api_key
+    type: secret-input
+    required: true
+    label:
+      en_US: "Redmine API Key"
+      ja_JP: "Redmine APIキー"
+      zh_Hans: "Redmine API 密钥"
+      pt_BR: "Chave de API do Redmine"
+    placeholder:
+      en_US: "Paste a Redmine API key with REST access."
+    help:
+      en_US: "Generate an API key from Redmine: My account → API access key."
 
-# For online document, you can use the following code:
-parameters:
-output_schema:
-    type: object
-    properties:
-      workspace_id:
-        type: string
-        description: workspace id
-      page_id:
-        type: string
-        description: page id
-      content:
-        type: string
-        description: page content
-
-
-# For online document, you can use the following code:
-parameters:
-output_schema:
-    type: object
-    properties:
-      file:
-        $ref: "https://dify.ai/schemas/v1/file.json"
+datasources:
+  - datasources/redmine_projects_issues.yaml
 
 extra:
   python:
