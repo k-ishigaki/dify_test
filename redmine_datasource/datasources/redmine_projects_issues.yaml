@@ -14,7 +14,23 @@ description:
   zh_Hans: "列出 Redmine 项目及其工单供检索。"
   pt_BR: "Lista projetos e tickets do Redmine para consulta."
 
-parameters: []
+parameters:
+  - name: "updated_since"
+    type: "string"
+    required: false
+    label:
+      en_US: "Updated Since"
+      ja_JP: "更新日時 (以降)"
+      zh_Hans: "更新起始时间"
+      pt_BR: "Atualizado Desde"
+    form: "form"
+    placeholder:
+      en_US: "2024-01-01"
+    description:
+      en_US: "Return only Redmine pages last updated on or after this date (ISO8601)."
+      ja_JP: "この ISO8601 形式の日付以降に更新されたページのみ取得します。"
+      zh_Hans: "仅返回在此 ISO8601 日期之后更新的页面。"
+      pt_BR: "Retorna apenas páginas atualizadas a partir desta data (ISO8601)."
 
 output_schema:
   type: object

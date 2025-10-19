@@ -3,10 +3,12 @@ import logging
 import urllib.parse
 from collections.abc import Generator
 from dataclasses import dataclass
-from typing import Any, Mapping
+from datetime import datetime, timezone
+from typing import Any, Mapping, Optional
 
 import requests
 
+from dify_plugin.config.logger_format import plugin_logger_handler
 from dify_plugin.entities.datasource import (
     DatasourceGetPagesResponse,
     DatasourceMessage,
@@ -18,6 +20,9 @@ from dify_plugin.interfaces.datasource import DatasourceProvider
 from dify_plugin.interfaces.datasource.online_document import OnlineDocumentDatasource
 
 logger = logging.getLogger(__name__)
+if not logger.handlers:
+    logger.addHandler(plugin_logger_handler)
+logger.setLevel(logging.INFO)
 
 
 class RedmineDatasourceError(RuntimeError):
@@ -39,6 +44,7 @@ class RedmineDatasourceProvider(DatasourceProvider):
     """
 
     def _validate_credentials(self, credentials: Mapping[str, Any]):
+        logger.debug("Validating Redmine credentials payload: %s", credentials)
         api_key = (credentials or {}).get("api_key")
         if not isinstance(api_key, str) or not api_key.strip():
             raise ValueError("Redmine API key is required.")
@@ -57,8 +63,16 @@ class RedmineDatasourceDataSource(OnlineDocumentDatasource):
     DEFAULT_PAGE_SIZE = 100
     REQUEST_TIMEOUT = 15
 
-    def _get_pages(self, _: Mapping[str, Any]) -> DatasourceGetPagesResponse:
+    def _get_pages(self, datasource_parameters: Mapping[str, Any]) -> DatasourceGetPagesResponse:
         credentials = self._resolve_credentials()
+        raw_updated_since = datasource_parameters.get("updated_since")
+        if raw_updated_since is None:
+            raw_updated_since = datasource_parameters.get("updatedSince")
+        logger.info("Datasource parameters received: %s", datasource_parameters)
+        updated_since = self._parse_updated_since(raw_updated_since)
+        logger.debug("Listing Redmine pages with updated_since=%s", updated_since)
+
+        logger.info("Fetching Redmine projects for workspace %s", credentials.workspace_name)
         projects = self._fetch_all_projects(credentials)
         pages: list[OnlineDocumentPage] = []
 
@@ -73,7 +87,7 @@ class RedmineDatasourceDataSource(OnlineDocumentDatasource):
             project_name = project_name_raw.replace("\r", " ").replace("\n", " ").strip()
             if not project_name:
                 project_name = project_identifier
-            project_updated_at = (
+            project_last_edit_str = (
                 project.get("updated_on")
                 or project.get("created_on")
                 or ""
@@ -83,13 +97,13 @@ class RedmineDatasourceDataSource(OnlineDocumentDatasource):
                     page_name=project_name,
                     page_id=project_page_id,
                     type="project",
-                    last_edited_time=project_updated_at,
+                    last_edited_time=project_last_edit_str,
                     parent_id=None,
                     page_icon=None,
                 )
             )
 
-            issues = self._fetch_all_project_issues(credentials, project_identifier)
+            issues = self._fetch_all_project_issues(credentials, project_identifier, updated_since)
             for issue in issues:
                 issue_id = issue.get("id")
                 subject_raw = issue.get("subject") or ""
@@ -99,7 +113,7 @@ class RedmineDatasourceDataSource(OnlineDocumentDatasource):
                     continue
 
                 issue_display_name = f"{issue_id}_{subject}".strip("_")
-                issue_updated_at = (
+                issue_updated_str = (
                     issue.get("updated_on")
                     or issue.get("created_on")
                     or ""
@@ -109,7 +123,7 @@ class RedmineDatasourceDataSource(OnlineDocumentDatasource):
                         page_name=issue_display_name,
                         page_id=f"issue:{issue_id}",
                         type="page",
-                        last_edited_time=issue_updated_at,
+                        last_edited_time=issue_updated_str,
                         parent_id=project_page_id,
                         page_icon=None,
                     )
@@ -126,17 +140,29 @@ class RedmineDatasourceDataSource(OnlineDocumentDatasource):
 
     def _get_content(self, page: GetOnlineDocumentPageContentRequest) -> Generator[DatasourceMessage, None, None]:
         credentials = self._resolve_credentials()
+        logger.info("Retrieving page content for %s", page.page_id)
         if page.page_id.startswith("issue:"):
             issue_id = page.page_id.split(":", 1)[1]
             issue = self._fetch_issue(credentials, issue_id)
             subject_raw = issue.get("subject") or ""
             subject = subject_raw.replace("\r", " ").replace("\n", " ").strip()
             title = f"{issue.get('id')}_{subject}".strip("_")
-            description = issue.get("description") or ""
+            description = (issue.get("description") or "").strip()
+            notes: list[str] = []
+            for journal in issue.get("journals", []) or []:
+                note = (journal or {}).get("notes")
+                if isinstance(note, str):
+                    cleaned_note = note.strip()
+                    if cleaned_note:
+                        notes.append(cleaned_note)
+
+            content_parts = [part for part in [description] if part]
+            content_parts.extend(notes)
+            content = "\n\n".join(content_parts)
 
             yield self.create_variable_message("workspace_id", credentials.workspace_id)
             yield self.create_variable_message("page_id", page.page_id)
-            yield self.create_variable_message("content", description)
+            yield self.create_variable_message("content", content)
             if title:
                 yield self.create_variable_message("title", title)
             return
@@ -174,13 +200,15 @@ class RedmineDatasourceDataSource(OnlineDocumentDatasource):
         normalized_base_url = f"{parsed.scheme}://{parsed.netloc}{normalized_path}"
         workspace_name = parsed.netloc or normalized_base_url
 
-        return RedmineCredentials(
+        resolved = RedmineCredentials(
             base_url=normalized_base_url,
             api_key=api_key,
             workspace_id=normalized_base_url,
             workspace_name=f"Redmine ({workspace_name})",
             workspace_icon="",
         )
+        logger.info("Resolved Redmine credentials for workspace %s", resolved.workspace_name)
+        return resolved
 
     def _fetch_all_projects(self, credentials: RedmineCredentials) -> list[Mapping[str, Any]]:
         logger.debug("Fetching Redmine projects")
@@ -210,26 +238,41 @@ class RedmineDatasourceDataSource(OnlineDocumentDatasource):
 
         return projects
 
-    def _fetch_all_project_issues(self, credentials: RedmineCredentials, project_identifier: str) -> list[Mapping[str, Any]]:
+    def _fetch_all_project_issues(
+        self,
+        credentials: RedmineCredentials,
+        project_identifier: str,
+        updated_since: datetime | None,
+    ) -> list[Mapping[str, Any]]:
         logger.debug("Fetching issues for project %s", project_identifier)
         issues: list[Mapping[str, Any]] = []
         offset = 0
 
         while True:
+            params: dict[str, Any] = {
+                "project_id": project_identifier,
+                "status_id": "*",
+                "limit": self.DEFAULT_PAGE_SIZE,
+                "offset": offset,
+            }
+            if updated_since:
+                params["updated_on"] = f">={self._format_redmine_updated_on(updated_since)}"
+
             payload = self._request(
                 credentials,
                 "/issues.json",
-                params={
-                    "project_id": project_identifier,
-                    "status_id": "*",
-                    "limit": self.DEFAULT_PAGE_SIZE,
-                    "offset": offset,
-                },
+                params=params,
             )
             batch = payload.get("issues") or []
             issues.extend(batch)
 
             if not batch:
+                logger.info(
+                    "No more issues for project %s (fetched=%s, updated_since=%s)",
+                    project_identifier,
+                    len(issues),
+                    updated_since,
+                )
                 break
 
             total_count = payload.get("total_count")
@@ -237,12 +280,23 @@ class RedmineDatasourceDataSource(OnlineDocumentDatasource):
                 break
 
             offset += self.DEFAULT_PAGE_SIZE
+            logger.debug(
+                "Continue fetching issues for project %s (offset=%s/%s, limit=%s)",
+                project_identifier,
+                offset,
+                total_count,
+                self.DEFAULT_PAGE_SIZE,
+            )
 
         return issues
 
     def _fetch_issue(self, credentials: RedmineCredentials, issue_id: str) -> Mapping[str, Any]:
         logger.debug("Fetching issue %s", issue_id)
-        payload = self._request(credentials, f"/issues/{issue_id}.json")
+        payload = self._request(
+            credentials,
+            f"/issues/{issue_id}.json",
+            params={"include": "journals"},
+        )
         issue = payload.get("issue")
         if not issue:
             raise RedmineDatasourceError(f"Issue {issue_id} not found")
@@ -268,11 +322,24 @@ class RedmineDatasourceDataSource(OnlineDocumentDatasource):
         }
 
         try:
+            logger.debug("Requesting Redmine: %s params=%s", url, params)
             response = requests.get(
                 url,
                 headers=headers,
                 params=params,
                 timeout=self.REQUEST_TIMEOUT,
+            )
+            if path.startswith("/issues"):
+                logger.info(
+                    "Redmine issues request params: %s (updated_since=%s)",
+                    params,
+                    params.get("updated_on") if params else None,
+                )
+            logger.debug(
+                "Redmine response status %s for %s?updated_on=%s",
+                response.status_code,
+                path,
+                params.get("updated_on") if params else None,
             )
             response.raise_for_status()
         except requests.RequestException as exc:
@@ -280,10 +347,40 @@ class RedmineDatasourceDataSource(OnlineDocumentDatasource):
             raise RedmineDatasourceError(f"Redmine API request failed: {exc}") from exc
 
         try:
-            return response.json()
+            payload = response.json()
+            logger.debug("Redmine payload keys: %s", list(payload.keys()))
+            return payload
         except ValueError as exc:
             logger.error("Failed to decode Redmine response as JSON: %s", exc, exc_info=True)
             raise RedmineDatasourceError("Failed to decode Redmine response as JSON") from exc
+
+    def _parse_updated_since(self, raw_value: Any) -> Optional[datetime]:
+        if raw_value in (None, "", 0):
+            return None
+        if not isinstance(raw_value, str):
+            raise RedmineDatasourceError("Parameter 'updated_since' must be a string in ISO 8601 format.")
+
+        text = raw_value.strip()
+        if not text:
+            return None
+
+        try:
+            if text.endswith("Z"):
+                text = text[:-1] + "+00:00"
+            parsed = datetime.fromisoformat(text)
+        except ValueError as exc:
+            raise RedmineDatasourceError(
+                "Parameter 'updated_since' must be ISO 8601, e.g. 2024-01-01T00:00:00Z"
+            ) from exc
+
+        if parsed.tzinfo is None:
+            parsed = parsed.replace(tzinfo=timezone.utc)
+
+        return parsed.astimezone(timezone.utc)
+
+    def _format_redmine_updated_on(self, value: datetime) -> str:
+        normalized = value.astimezone(timezone.utc)
+        return normalized.date().isoformat()
 
 
 # For website crawl, you can use the following code:
