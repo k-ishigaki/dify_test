@@ -1,0 +1,49 @@
+identity:
+  name: "upload_files_with_locked_rule"
+  author: "k-ishigaki"
+  label:
+    en_US: "Upload Files (Locked Rule)"
+    ja_JP: "固定ルールでファイルアップロード"
+    zh_Hans: "按锁定规则上传文件"
+    pt_BR: "Enviar arquivos (regra bloqueada)"
+description:
+  human:
+    en_US: "Upload one or more files to a dataset using the metadata document's process_rule."
+    ja_JP: "メタデータ文書の process_rule を流用して、ファイルをデータセットへアップロードします。"
+    zh_Hans: "使用元数据文档的 process_rule 将文件上传到数据集。"
+    pt_BR: "Envia arquivos para o dataset usando o process_rule do documento de metadados."
+  llm: "Upload one or more files to a dataset while reusing the metadata document's process_rule."
+parameters:
+  - name: dataset_id
+    type: string
+    required: true
+    label:
+      en_US: "Dataset ID"
+      ja_JP: "データセットID"
+      zh_Hans: "数据集ID"
+      pt_BR: "ID do dataset"
+    human_description:
+      en_US: "Identifier of the target Dify dataset."
+      ja_JP: "アップロード先 Dify データセットの識別子。"
+      zh_Hans: "目标 Dify 数据集标识。"
+      pt_BR: "Identificador do dataset Dify de destino."
+    llm_description: "Identifier of the target Dify dataset."
+    form: llm
+  - name: files
+    type: files
+    required: true
+    label:
+      en_US: "Files"
+      ja_JP: "ファイル"
+      zh_Hans: "文件"
+      pt_BR: "Arquivos"
+    human_description:
+      en_US: "Files to upload. Each file is registered with the locked process_rule from _DATASET_META.md."
+      ja_JP: "_DATASET_META.md の固定 process_rule を用いて登録するファイル。"
+      zh_Hans: "要上传的文件，将使用 _DATASET_META.md 的锁定 process_rule。"
+      pt_BR: "Arquivos a enviar usando o process_rule bloqueado do _DATASET_META.md."
+    llm_description: "Files to upload using the metadata document's process_rule."
+    form: form
+extra:
+  python:
+    source: tools/upload_files_with_locked_rule.py

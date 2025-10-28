@@ -1,0 +1,92 @@
+identity:
+  author: "k-ishigaki"
+  name: "kb-dataset-meta-tools"
+  label:
+    en_US: "Dataset Meta Tools"
+    zh_Hans: "数据集元数据工具"
+    pt_BR: "Ferramentas de metadados do dataset"
+    ja_JP: "データセットメタツール"
+  description:
+    en_US: "Manage Knowledge Base dataset metadata — read, write, and upload files using the dataset’s locked process rule."
+    zh_Hans: "管理知识库数据集元数据：读取、写入并使用固定 process_rule 上传文件。"
+    pt_BR: "Gerencie metadados de datasets da base de conhecimento — ler, gravar e enviar arquivos com a process_rule bloqueada."
+    ja_JP: "ナレッジベースのデータセットメタデータを管理し、固定 process_rule で読み書き・ファイル登録を行います。"
+  icon: "icon.svg"
+
+credentials_for_provider:
+  BASE_URL:
+    type: "text-input"
+    required: true
+    label:
+      en_US: "Dify Base URL"
+      zh_Hans: "Dify 基础 URL"
+      pt_BR: "URL base do Dify"
+      ja_JP: "Dify ベースURL"
+    help:
+      en_US: "Root URL of your Dify instance, e.g. https://your-dify.example.com"
+      zh_Hans: "Dify 实例的根地址，例如 https://your-dify.example.com"
+      pt_BR: "URL raiz da sua instância Dify. Ex.: https://sua-dify.example.com"
+      ja_JP: "Dify インスタンスのルートURL（例: https://your-dify.example.com）"
+  API_KEY:
+    type: "secret-input"
+    required: true
+    label:
+      en_US: "Server-side API Key"
+      zh_Hans: "服务端 API Key"
+      pt_BR: "Chave de API (server-side)"
+      ja_JP: "サーバーサイドAPIキー"
+    help:
+      en_US: "Create from Knowledge Base → API Access. Required for server-side Dataset API."
+      zh_Hans: "在知识库的 API Access 页面创建，用于服务端 Dataset API。"
+      pt_BR: "Crie em Knowledge Base → API Access. Necessário para a API de datasets."
+      ja_JP: "ナレッジベースの「API Access」で発行し、Dataset API 呼び出しに使用します。"
+
+#########################################################################################
+# If you want to support OAuth, you can uncomment the following code.
+#########################################################################################
+# oauth_schema:
+#   client_schema:
+#     - name: "client_id"
+#       type: "secret-input"
+#       required: true
+#       url: https://example.com/oauth/authorize
+#       placeholder:
+#         en_US: "Please input your Client ID"
+#         zh_Hans: "请输入你的 Client ID"
+#         pt_BR: "Insira seu Client ID"
+#       help:
+#         en_US: "Client ID is used to authenticate requests to the example.com API."
+#         zh_Hans: "Client ID 用于认证请求到 example.com API。"
+#         pt_BR: "Client ID é usado para autenticar solicitações à API do example.com."
+#       label:
+#         zh_Hans: "Client ID"
+#         en_US: "Client ID"
+#     - name: "client_secret"
+#       type: "secret-input"
+#       required: true
+#       url: https://example.com/oauth/authorize
+#       placeholder:
+#         en_US: "Please input your Client Secret"
+#         zh_Hans: "请输入你的 Client Secret"
+#         pt_BR: "Insira seu Client Secret"
+#       help:
+#         en_US: "Client Secret is used to authenticate requests to the example.com API."
+#         zh_Hans: "Client Secret 用于认证请求到 example.com API。"
+#         pt_BR: "Client Secret é usado para autenticar solicitações à API do example.com."
+#       label:
+#         zh_Hans: "Client Secret"
+#         en_US: "Client Secret"
+#   credentials_schema:
+#     - name: "access_token"
+#       type: "secret-input"
+#       label:
+#         zh_Hans: "Access Token"
+#         en_US: "Access Token"
+
+tools:
+  - tools/read_meta.yaml
+  - tools/write_meta.yaml
+  - tools/upload_files_with_locked_rule.yaml
+extra:
+  python:
+    source: provider/kb-dataset-meta-tools.py
