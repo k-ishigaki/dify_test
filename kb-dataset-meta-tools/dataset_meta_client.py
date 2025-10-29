@@ -74,6 +74,35 @@ class DatasetMetaClient:
         logger.debug("Dataset indexing technique not defined dataset=%s", dataset_id)
         return None
 
+    def list_dataset_metadata(self, dataset_id: str) -> list[dict[str, Any]]:
+        response = self._request_json("GET", f"/v1/datasets/{dataset_id}/metadata")
+
+        def _extract(obj: Any, depth: int = 0) -> list[dict[str, Any]] | None:
+            if isinstance(obj, list):
+                dict_items = [item for item in obj if isinstance(item, dict)]
+                if dict_items or not obj:
+                    return dict_items
+                return []
+            if isinstance(obj, dict):
+                for key in ("data", "items", "metadata", "list", "results"):
+                    if key in obj:
+                        extracted = _extract(obj[key], depth + 1)
+                        if extracted is not None:
+                            return extracted
+                for value in obj.values():
+                    extracted = _extract(value, depth + 1)
+                    if extracted is not None:
+                        return extracted
+                return []
+            return None
+
+        extracted = _extract(response)
+        if extracted is None:
+            raise RuntimeError(
+                f"Unexpected response shape when listing dataset metadata (type={type(response).__name__})"
+            )
+        return extracted
+
     def iter_documents(self, dataset_id: str, page_size: int = 200) -> Iterator[dict[str, Any]]:
         page = 1
         while True:
@@ -163,6 +192,10 @@ class DatasetMetaClient:
             use_session_headers=False,
         )
 
+    def update_documents_metadata(self, dataset_id: str, operation_data: list[dict[str, Any]]) -> Any:
+        payload = {"operation_data": operation_data}
+        return self._request_json("POST", f"/v1/datasets/{dataset_id}/documents/metadata", json=payload)
+
     def get_document_text(self, dataset_id: str, document_id: str) -> str:
         detail = self.get_document(dataset_id, document_id)
         content = detail.get("content")
@@ -240,7 +273,7 @@ class DatasetMetaClient:
             else:
                 page = (page_field or page) + 1
 
-    def _request_json(self, method: str, path: str, **kwargs: Any) -> dict[str, Any]:
+    def _request_json(self, method: str, path: str, **kwargs: Any) -> Any:
         response = self._request(method, path, **kwargs)
         return response.json()
 

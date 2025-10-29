@@ -44,6 +44,21 @@ parameters:
       pt_BR: "Arquivos a enviar usando o process_rule bloqueado do _DATASET_META.md."
     llm_description: "Files to upload using the metadata document's process_rule."
     form: form
+  - name: metadata_list
+    type: string
+    required: false
+    label:
+      en_US: "Metadata List"
+      ja_JP: "メタデータ一覧"
+      zh_Hans: "元数据列表"
+      pt_BR: "Lista de metadados"
+    human_description:
+      en_US: "Optional JSON object mapping metadata names to values, e.g. {\"category\":\"tech\"}."
+      ja_JP: "任意の JSON オブジェクトでメタデータ名と値を指定します（例: {\"category\":\"tech\"}）。"
+      zh_Hans: "可选的 JSON 对象，将元数据名称映射到值，例如 {\"category\":\"tech\"}。"
+      pt_BR: "String JSON opcional mapeando nomes de metadados para valores, por exemplo {\"category\":\"tech\"}."
+    llm_description: "Optional JSON object where keys are metadata names and values are assigned values."
+    form: llm
 extra:
   python:
     source: tools/upload_files_with_locked_rule.py
