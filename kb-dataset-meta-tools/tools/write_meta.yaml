@@ -8,11 +8,11 @@ identity:
     pt_BR: "Gravar metadados do dataset"
 description:
   human:
-    en_US: "Overwrite the _DATASET_META.md document in a Knowledge Base dataset, preserving its existing process_rule."
-    ja_JP: "既存の process_rule を保持したまま、データセット内の _DATASET_META.md を上書き保存します。"
-    zh_Hans: "在保持现有 process_rule 的情况下，覆盖知识库数据集中的 _DATASET_META.md。"
-    pt_BR: "Sobrescreve o arquivo _DATASET_META.md em um dataset mantendo o process_rule existente."
-  llm: "Overwrite the _DATASET_META.md document in a Knowledge Base dataset while preserving its process_rule."
+    en_US: "Overwrite the JSON string in _DATASET_META_JSON.txt within a Knowledge Base dataset, preserving its existing process_rule."
+    ja_JP: "既存の process_rule を保持したまま、データセット内の _DATASET_META_JSON.txt に保存する JSON 文字列を上書き保存します。"
+    zh_Hans: "在保持现有 process_rule 的情况下，覆盖知识库数据集中 _DATASET_META_JSON.txt 内的 JSON 字符串。"
+    pt_BR: "Sobrescreve a string JSON em _DATASET_META_JSON.txt de um dataset mantendo o process_rule existente."
+  llm: "Overwrite the JSON string in _DATASET_META_JSON.txt within a Knowledge Base dataset while preserving its process_rule."
 parameters:
   - name: dataset_id
     type: string
@@ -38,11 +38,11 @@ parameters:
       zh_Hans: "内容"
       pt_BR: "Conteúdo"
     human_description:
-      en_US: "Text to persist into _DATASET_META.md."
-      ja_JP: "_DATASET_META.md に保存するテキスト。"
-      zh_Hans: "要写入到 _DATASET_META.md 的文本。"
-      pt_BR: "Texto a ser gravado no _DATASET_META.md."
-    llm_description: "Text to persist into _DATASET_META.md."
+      en_US: "JSON string to persist into _DATASET_META_JSON.txt."
+      ja_JP: "_DATASET_META_JSON.txt に保存する JSON 文字列。"
+      zh_Hans: "要写入到 _DATASET_META_JSON.txt 的 JSON 字符串。"
+      pt_BR: "String JSON a ser gravada no _DATASET_META_JSON.txt."
+    llm_description: "JSON string to persist into _DATASET_META_JSON.txt."
     form: llm
 extra:
   python:

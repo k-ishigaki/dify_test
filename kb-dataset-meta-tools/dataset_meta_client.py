@@ -5,7 +5,7 @@ import json
 import logging
 import mimetypes
 from dataclasses import dataclass
-from typing import Any, Iterator
+from typing import Any
 from urllib.parse import urljoin, urlparse
 
 import requests
@@ -14,7 +14,7 @@ import requests
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-META_DOCUMENT_NAME = "_DATASET_META.md"
+META_DOCUMENT_NAME = "_DATASET_META_JSON.txt"
 
 
 @dataclass
@@ -55,12 +55,17 @@ class DatasetMetaClient:
         """
         return self._request_json("GET", "/v1/datasets", params={"page": 1, "limit": 1})
 
-    def list_documents(self, dataset_id: str, page: int = 1, limit: int = 200) -> dict[str, Any]:
-        return self._request_json(
-            "GET",
-            f"/v1/datasets/{dataset_id}/documents",
-            params={"page": page, "limit": limit},
-        )
+    def list_documents(
+        self,
+        dataset_id: str,
+        page: int = 1,
+        limit: int = 200,
+        keyword: str | None = None,
+    ) -> dict[str, Any]:
+        params: dict[str, Any] = {"page": page, "limit": limit}
+        if keyword:
+            params["keyword"] = keyword
+        return self._request_json("GET", f"/v1/datasets/{dataset_id}/documents", params=params)
 
     def get_dataset(self, dataset_id: str) -> dict[str, Any]:
         return self._request_json("GET", f"/v1/datasets/{dataset_id}")
@@ -103,39 +108,18 @@ class DatasetMetaClient:
             )
         return extracted
 
-    def iter_documents(self, dataset_id: str, page_size: int = 200) -> Iterator[dict[str, Any]]:
-        page = 1
-        while True:
-            listing = self.list_documents(dataset_id, page=page, limit=page_size)
-            items = listing.get("data") or listing.get("items") or []
-            logger.debug(
-                "iter_documents dataset=%s page=%s count=%s keys=%s",
-                dataset_id,
-                page,
-                len(items),
-                [item.get("name") or item.get("filename") for item in items],
-            )
-            for item in items:
-                yield item
-
-            has_more = listing.get("has_more")
-            if has_more is False:
-                break
-            if len(items) < page_size:
-                break
-            page_field = listing.get("page")
-            if isinstance(page_field, int) and page_field == page:
-                page += 1
-            else:
-                page = (page_field or page) + 1
-
     def find_meta_document(self, dataset_id: str) -> dict[str, Any]:
-        for doc in self.iter_documents(dataset_id):
+        """
+        Locate the metadata document using server-side keyword search.
+        """
+        listing = self.list_documents(dataset_id, page=1, limit=1, keyword=META_DOCUMENT_NAME)
+        items = listing.get("data") or listing.get("items") or []
+        for doc in items:
             name = doc.get("name") or doc.get("filename") or ""
-            logger.debug("Inspecting document dataset=%s doc_id=%s name=%s", dataset_id, doc.get("id"), name)
             if name == META_DOCUMENT_NAME:
-                logger.info("Found metadata document dataset=%s doc_id=%s", dataset_id, doc.get("id"))
+                logger.info("Found metadata document via keyword search dataset=%s doc_id=%s", dataset_id, doc.get("id"))
                 return doc
+
         logger.error("Metadata document %s not found in dataset %s", META_DOCUMENT_NAME, dataset_id)
         raise RuntimeError(f"{META_DOCUMENT_NAME} was not found in dataset {dataset_id}")
 
@@ -273,6 +257,33 @@ class DatasetMetaClient:
             else:
                 page = (page_field or page) + 1
 
+    def update_segment(
+        self,
+        dataset_id: str,
+        document_id: str,
+        segment_id: str,
+        *,
+        content: str,
+        answer: str | None = None,
+        keywords: list[str] | None = None,
+        enabled: bool | None = None,
+        regenerate_child_chunks: bool | None = None,
+    ) -> dict[str, Any]:
+        payload: dict[str, Any] = {"content": content}
+        if answer is not None:
+            payload["answer"] = answer
+        if keywords is not None:
+            payload["keywords"] = keywords
+        if enabled is not None:
+            payload["enabled"] = enabled
+        if regenerate_child_chunks is not None:
+            payload["regenerate_child_chunks"] = regenerate_child_chunks
+        return self._request_json(
+            "POST",
+            f"/v1/datasets/{dataset_id}/documents/{document_id}/segments/{segment_id}",
+            json={"segment": payload},
+        )
+
     def _request_json(self, method: str, path: str, **kwargs: Any) -> Any:
         response = self._request(method, path, **kwargs)
         return response.json()
@@ -308,4 +319,17 @@ def extract_document_id(response_json: dict[str, Any]) -> str | None:
             return document["id"]
         if "document_id" in document and isinstance(document["document_id"], str):
             return document["document_id"]
+    return None
+
+
+def extract_segment_id(segment: dict[str, Any]) -> str | None:
+    """
+    Unified helper that pulls the segment identifier from different payload shapes.
+    """
+    if not isinstance(segment, dict):
+        return None
+    if "segment_id" in segment and isinstance(segment["segment_id"], str):
+        return segment["segment_id"]
+    if "id" in segment and isinstance(segment["id"], str):
+        return segment["id"]
     return None

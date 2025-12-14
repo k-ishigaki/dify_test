@@ -38,10 +38,10 @@ parameters:
       zh_Hans: "文件"
       pt_BR: "Arquivos"
     human_description:
-      en_US: "Files to upload. Each file is registered with the locked process_rule from _DATASET_META.md."
-      ja_JP: "_DATASET_META.md の固定 process_rule を用いて登録するファイル。"
-      zh_Hans: "要上传的文件，将使用 _DATASET_META.md 的锁定 process_rule。"
-      pt_BR: "Arquivos a enviar usando o process_rule bloqueado do _DATASET_META.md."
+      en_US: "Files to upload. Each file is registered with the locked process_rule from _DATASET_META_JSON.txt."
+      ja_JP: "_DATASET_META_JSON.txt の固定 process_rule を用いて登録するファイル。"
+      zh_Hans: "要上传的文件，将使用 _DATASET_META_JSON.txt 的锁定 process_rule。"
+      pt_BR: "Arquivos a enviar usando o process_rule bloqueado do _DATASET_META_JSON.txt."
     llm_description: "Files to upload using the metadata document's process_rule."
     form: form
   - name: metadata_list

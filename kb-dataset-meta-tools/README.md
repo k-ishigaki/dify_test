@@ -12,7 +12,8 @@
 	•	API_KEY（Server-side API Key）
 
 共通ポリシー
-	•	_DATASET_META.md の document id を特定 → 以降それを軸に処理
+	•	_DATASET_META_JSON.txt の document id を特定 → 以降それを軸に処理
+	•	_DATASET_META_JSON.txt の中身は JSON 文字列として扱う（常に JSON 文字列を読み書き）
 	•	process_rule は常にメタデータ文書の dataset_process_rule を参照（＝固定）
 	•	書き込みは API の「更新系」が無い環境でも動くよう、削除→再作成でフォールバック
 
@@ -26,7 +27,7 @@
 	•	ファイルで作成: POST /datasets/{dataset_id}/document/create-by-file（multipart）
 	•	ドキュメント削除: DELETE /datasets/{dataset_id}/documents/{document_id}
 
-重要：読み書きしやすさのため、_DATASET_META.md は “テキスト登録” を推奨
+重要：読み書きしやすさのため、_DATASET_META_JSON.txt は “テキスト登録” を推奨
 もともと「手動登録」とのことですが、UIからでも「テキスト」を選べるなら、後の読み書きが非常に楽になります（ファイル本体のダウンロードAPIはバージョン依存・制限があるため）。
 
 ツール仕様
@@ -35,26 +36,26 @@
 
 入力: dataset_id: string
 処理:
-	1.	_DATASET_META.md を名前一致で検索 → meta_doc_id 取得
+	1.	_DATASET_META_JSON.txt を名前一致で検索 → meta_doc_id 取得
 	2.	詳細取得 → dataset_process_rule を保持（以降のツールでも使う）
-	3.	本文の取り出し
-	•	テキスト文書として作っている場合：document の content（もしくは segments から連結）
+	3.	本文（JSON 文字列）の取り出し
+	•	テキスト文書として作っている場合：document の content（もしくは segments から連結）に入っている JSON 文字列をそのまま読む
 	•	“ファイル”として作っている場合は、取得が難しいためベストエフォート：
 	•	可能ならダウンロードAPI（環境により /files/{file_id}/download が使える）
 	•	使えない場合は代替策として「メタはテキスト登録に切替えてもらう」運用を返す
-	4.	文字列を返す
+	4.	JSON 文字列を返す
 
-出力: { content: string }
+出力: { content: string（JSON 文字列） }
 
 2) メタデータ書き込み（write_meta）
 
-入力: dataset_id: string, content: string
+入力: dataset_id: string, content: string（JSON 文字列）
 処理:
-	1.	_DATASET_META.md の meta_doc_id を特定
+	1.	_DATASET_META_JSON.txt の meta_doc_id を特定
 	2.	GET .../documents/{meta_doc_id} で dataset_process_rule を取得（固定ルール）
 	3.	更新方法
 	•	“テキスト更新API”がある場合はそれを使用
-	•	無い場合のフォールバック：DELETE → POST create-by-text で再作成（name=_DATASET_META.md、text=content、process_rule=取得した固定ルール）
+	•	無い場合のフォールバック：DELETE → POST create-by-text で再作成（name=_DATASET_META_JSON.txt、text=content、process_rule=取得した固定ルール）
 	4.	完了ステータスを返す
 
 出力: { ok: true, document_id: string }
@@ -63,8 +64,8 @@
 
 入力: dataset_id: string, files: [binary or url or base64]
 処理:
-	1.	_DATASET_META.md の meta_doc_id を特定
-	2.	GET .../documents/{meta_doc_id} → dataset_process_rule を取得
+	1.	_DATASET_META_JSON.txt の meta_doc_id を特定
+2.	GET .../documents/{meta_doc_id} → dataset_process_rule を取得
 	3.	各 file について POST /document/create-by-file にて multipart 送信
 	•	フィールド file に実体
 	•	フィールド data に JSON 文字列：{ "process_rule": <dataset_process_rule> }
@@ -102,7 +103,7 @@ tools:
     label:
       ja_JP: メタデータ読み出し
     description:
-      ja_JP: 指定データセット内の _DATASET_META.md を読み出します
+      ja_JP: 指定データセット内の _DATASET_META_JSON.txt に保存された JSON 文字列を読み出します
     parameters:
       type: object
       properties:
@@ -115,7 +116,7 @@ tools:
     label:
       ja_JP: メタデータ書き込み
     description:
-      ja_JP: 指定データセット内の _DATASET_META.md を上書き保存します
+      ja_JP: 指定データセット内の _DATASET_META_JSON.txt に保存する JSON 文字列を上書き保存します
     parameters:
       type: object
       properties:
@@ -123,14 +124,14 @@ tools:
           type: string
         content:
           type: string
-          description: 書き込むテキスト本文
+          description: 書き込む JSON 文字列（_DATASET_META_JSON.txt の内容）
       required: [dataset_id, content]
 
   - name: upload_files_with_locked_rule
     label:
       ja_JP: ファイルアップロード（process_rule固定）
     description:
-      ja_JP: _DATASET_META.md の process_rule を流用してファイルを登録（更新）
+      ja_JP: _DATASET_META_JSON.txt の process_rule を流用してファイルを登録（更新）
     parameters:
       type: object
       properties:
@@ -153,7 +154,7 @@ import json
 import mimetypes
 import requests
 
-META_NAME = "_DATASET_META.md"
+META_NAME = "_DATASET_META_JSON.txt"
 
 class DifyClient:
     def __init__(self, base_url: str, api_key: str):
@@ -295,6 +296,3 @@ def tool_upload_files_with_locked_rule(params, credentials):
 	•	requests.post(..., files=...) を使うため、Content-Type は自動で multipart/form-data になります。data パートには JSON文字列（{"process_rule": ...}）を入れています。
 	•	list_documents の戻りはバージョンで data / items が揺れるため両方見ています。
 	•	「本文取得」は テキスト文書で登録しておくのが最も安定です。ファイル原本のダウンロードは提供版差があるため、必要ならあなたの環境のレスポンス形を見て 3) の分岐を肉付けしてください。
-
-
-

@@ -8,11 +8,11 @@ identity:
     pt_BR: "Ler metadados do dataset"
 description:
   human:
-    en_US: "Fetch the _DATASET_META.md document from a Knowledge Base dataset and return its text content."
-    ja_JP: "ナレッジベースのデータセットから _DATASET_META.md を取得し、本文テキストを返します。"
-    zh_Hans: "从知识库数据集中获取 _DATASET_META.md 文档并返回其文本内容。"
-    pt_BR: "Recupera o documento _DATASET_META.md de um dataset e retorna seu conteúdo em texto."
-  llm: "Fetch the _DATASET_META.md document from a Knowledge Base dataset and return its text content."
+    en_US: "Fetch the _DATASET_META_JSON.txt document from a Knowledge Base dataset and return its JSON string content."
+    ja_JP: "ナレッジベースのデータセットから _DATASET_META_JSON.txt を取得し、JSON 文字列の本文を返します。"
+    zh_Hans: "从知识库数据集中获取 _DATASET_META_JSON.txt 文档并返回其中的 JSON 字符串内容。"
+    pt_BR: "Recupera o documento _DATASET_META_JSON.txt de um dataset e retorna o conteúdo como uma string JSON."
+  llm: "Fetch the _DATASET_META_JSON.txt document from a Knowledge Base dataset and return its JSON string content."
 parameters:
   - name: dataset_id
     type: string
