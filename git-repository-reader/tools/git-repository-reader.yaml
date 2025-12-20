@@ -1,0 +1,34 @@
+identity:
+  name: "git-repository-reader"
+  author: "k-ishigaki"
+  label:
+    en_US: "git-repository-reader"
+    zh_Hans: "git-repository-reader"
+    pt_BR: "git-repository-reader"
+    ja_JP: "git-repository-reader"
+description:
+  human:
+    en_US: "A Dify plugin for access to Git repository files, optimized for LLMs."
+    zh_Hans: "A Dify plugin for access to Git repository files, optimized for LLMs."
+    pt_BR: "A Dify plugin for access to Git repository files, optimized for LLMs."
+    ja_JP: "A Dify plugin for access to Git repository files, optimized for LLMs."
+  llm: "A Dify plugin for access to Git repository files, optimized for LLMs."
+parameters:
+  - name: query
+    type: string
+    required: true
+    label:
+      en_US: Query string
+      zh_Hans: 查询语句
+      pt_BR: Query string
+      ja_JP: クエリ文字列
+    human_description:
+      en_US: "A Dify plugin for access to Git repository files, optimized for LLMs."
+      zh_Hans: "A Dify plugin for access to Git repository files, optimized for LLMs."
+      pt_BR: "A Dify plugin for access to Git repository files, optimized for LLMs."
+      ja_JP: "A Dify plugin for access to Git repository files, optimized for LLMs."
+    llm_description: "A Dify plugin for access to Git repository files, optimized for LLMs."
+    form: llm
+extra:
+  python:
+    source: tools/git-repository-reader.py
