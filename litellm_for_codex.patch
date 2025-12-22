@@ -1,0 +1,596 @@
+diff --cc docker-compose.yml
+index 988860a787,24b122e073..0000000000
+--- a/docker-compose.yml
++++ b/docker-compose.yml
+@@@ -4,17 -4,16 +4,17 @@@ services
+        context: .
+        args:
+          target: runtime
+-     image: docker.litellm.ai/berriai/litellm:main-stable
+++    #image: docker.litellm.ai/berriai/litellm:main-stable
+      #########################################
+-     ## Uncomment these lines to start proxy with a config.yaml file ##
+-     # volumes:
+-     #  - ./config.yaml:/app/config.yaml
+-     # command:
+-     #  - "--config=/app/config.yaml"
++     volumes:
++       - ./config.yaml:/app/config.yaml
++     command: ["--config=/app/config.yaml", "--detailed_debug"]
+      ##############################################
+      ports:
+--      - "4000:4000" # Map the container port to the host, change the host port if necessary
+++      - "4000:4000"
+      environment:
++       LITELLM_LOG: "DEBUG"
++       LITELLM_DEBUG: true
+        DATABASE_URL: "postgresql://llmproxy:dbpassword9090@db:5432/litellm"
+        STORE_MODEL_IN_DB: "True" # allows adding models to proxy via UI
+      env_file:
+diff --git a/litellm/main.py b/litellm/main.py
+index 60fe3eb2de..2638fa092a 100644
+--- a/litellm/main.py
++++ b/litellm/main.py
+@@ -6781,6 +6781,7 @@ def stream_chunk_builder(  # noqa: PLR0915
+             _choice = cast(Choices, response.choices[0])
+             _choice.message.content = None
+             _choice.message.tool_calls = tool_calls_list
++            _choice.finish_reason = "tool_calls"
+ 
+         function_call_chunks = [
+             chunk
+diff --git a/litellm/responses/litellm_completion_transformation/streaming_iterator.py b/litellm/responses/litellm_completion_transformation/streaming_iterator.py
+index def2f72437..d4882cb49c 100644
+--- a/litellm/responses/litellm_completion_transformation/streaming_iterator.py
++++ b/litellm/responses/litellm_completion_transformation/streaming_iterator.py
+@@ -16,6 +16,8 @@ from litellm.types.llms.openai import (
+     ContentPartDoneEvent,
+     ContentPartDonePartOutputText,
+     ContentPartDonePartReasoningText,
++    FunctionCallArgumentsDeltaEvent,
++    FunctionCallArgumentsDoneEvent,
+     OutputItemAddedEvent,
+     OutputItemDoneEvent,
+     OutputTextAnnotationAddedEvent,
+@@ -75,6 +77,14 @@ class LiteLLMCompletionStreamingIterator(ResponsesAPIStreamingIterator):
+         self.sent_output_content_part_done_event: bool = False
+         self.sent_output_item_done_event: bool = False
+         self.sent_annotation_events: bool = False
++        self.seen_tool_calls: bool = False
++        self.tool_call_items: dict = {}
++        self.tool_call_item_ids: dict = {}
++        self.sent_tool_call_added_events: set = set()
++        self.sent_tool_call_done_events: set = set()
++        self.sent_function_call_arguments_done_events: set = set()
++        self._pending_tool_call_events: List[BaseLiteLLMOpenAIResponseObject] = []
++        self._pending_tool_call_done_events: List[BaseLiteLLMOpenAIResponseObject] = []
+         self.litellm_model_response: Optional[
+             Union[ModelResponse, TextCompletionResponse]
+         ] = None
+@@ -164,6 +174,41 @@ class LiteLLMCompletionStreamingIterator(ResponsesAPIStreamingIterator):
+             ),
+         )
+ 
++    def create_tool_call_item_added_event(self, tool_index: int) -> OutputItemAddedEvent:
++        tool_call = self.tool_call_items.get(tool_index, {})
++        item_id = self.tool_call_item_ids.get(tool_index)
++        if not item_id:
++            item_id = tool_call.get("id") or f"call_{str(uuid.uuid4())}"
++            self.tool_call_item_ids[tool_index] = item_id
++        return OutputItemAddedEvent(
++            type=ResponsesAPIStreamEvents.OUTPUT_ITEM_ADDED,
++            output_index=tool_index,
++            item=BaseLiteLLMOpenAIResponseObject(
++                **{
++                    "id": item_id,
++                    "type": "function_call",
++                    "status": "in_progress",
++                    "call_id": tool_call.get("id") or item_id,
++                    "name": tool_call.get("name") or "",
++                    "arguments": tool_call.get("arguments") or "",
++                }
++            ),
++        )
++
++    def create_function_call_arguments_delta_event(
++        self, tool_index: int, delta: str
++    ) -> FunctionCallArgumentsDeltaEvent:
++        item_id = self.tool_call_item_ids.get(tool_index)
++        if not item_id:
++            item_id = f"call_{str(uuid.uuid4())}"
++            self.tool_call_item_ids[tool_index] = item_id
++        return FunctionCallArgumentsDeltaEvent(
++            type=ResponsesAPIStreamEvents.FUNCTION_CALL_ARGUMENTS_DELTA,
++            item_id=item_id,
++            output_index=tool_index,
++            delta=delta,
++        )
++
+     def create_content_part_added_event(self) -> ContentPartAddedEvent:
+         return ContentPartAddedEvent(
+             type=ResponsesAPIStreamEvents.CONTENT_PART_ADDED,
+@@ -262,9 +307,48 @@ class LiteLLMCompletionStreamingIterator(ResponsesAPIStreamingIterator):
+             ),
+         )
+ 
++    def create_tool_call_item_done_event(self, tool_index: int) -> OutputItemDoneEvent:
++        tool_call = self.tool_call_items.get(tool_index, {})
++        item_id = self.tool_call_item_ids.get(tool_index)
++        if not item_id:
++            item_id = tool_call.get("id") or f"call_{str(uuid.uuid4())}"
++            self.tool_call_item_ids[tool_index] = item_id
++        return OutputItemDoneEvent(
++            type=ResponsesAPIStreamEvents.OUTPUT_ITEM_DONE,
++            output_index=tool_index,
++            sequence_number=1,
++            item=BaseLiteLLMOpenAIResponseObject(
++                **{
++                    "id": item_id,
++                    "status": "completed",
++                    "type": "function_call",
++                    "call_id": tool_call.get("id") or item_id,
++                    "name": tool_call.get("name") or "",
++                    "arguments": tool_call.get("arguments") or "",
++                }
++            ),
++        )
++
++    def create_function_call_arguments_done_event(
++        self, tool_index: int
++    ) -> FunctionCallArgumentsDoneEvent:
++        tool_call = self.tool_call_items.get(tool_index, {})
++        item_id = self.tool_call_item_ids.get(tool_index)
++        if not item_id:
++            item_id = tool_call.get("id") or f"call_{str(uuid.uuid4())}"
++            self.tool_call_item_ids[tool_index] = item_id
++        return FunctionCallArgumentsDoneEvent(
++            type=ResponsesAPIStreamEvents.FUNCTION_CALL_ARGUMENTS_DONE,
++            item_id=item_id,
++            output_index=tool_index,
++            arguments=tool_call.get("arguments") or "",
++        )
++
+     def return_default_done_events(
+         self, litellm_complete_object: ModelResponse
+     ) -> Optional[BaseLiteLLMOpenAIResponseObject]:
++        if self.seen_tool_calls:
++            return self.return_tool_call_done_events(litellm_complete_object)
+         if self.sent_output_text_done_event is False:
+             self.sent_output_text_done_event = True
+             return self.create_output_text_done_event(litellm_complete_object)
+@@ -276,6 +360,45 @@ class LiteLLMCompletionStreamingIterator(ResponsesAPIStreamingIterator):
+             return self.create_output_item_done_event(litellm_complete_object)
+         return None
+ 
++    def return_tool_call_done_events(
++        self, litellm_complete_object: ModelResponse
++    ) -> Optional[BaseLiteLLMOpenAIResponseObject]:
++        tool_calls = getattr(
++            litellm_complete_object.choices[0].message, "tool_calls", None
++        )
++        if tool_calls:
++            for idx, tool_call in enumerate(tool_calls):
++                entry = self.tool_call_items.get(idx, {"arguments": ""})
++                if tool_call.id:
++                    entry["id"] = tool_call.id
++                if tool_call.function:
++                    if tool_call.function.name:
++                        entry["name"] = tool_call.function.name
++                    if tool_call.function.arguments:
++                        entry["arguments"] = tool_call.function.arguments
++                self.tool_call_items[idx] = entry
++                if idx not in self.tool_call_item_ids:
++                    self.tool_call_item_ids[idx] = (
++                        entry.get("id") or f"call_{str(uuid.uuid4())}"
++                    )
++
++        if not self._pending_tool_call_done_events:
++            for idx in sorted(self.tool_call_items.keys()):
++                if idx not in self.sent_function_call_arguments_done_events:
++                    self.sent_function_call_arguments_done_events.add(idx)
++                    self._pending_tool_call_done_events.append(
++                        self.create_function_call_arguments_done_event(idx)
++                    )
++                if idx not in self.sent_tool_call_done_events:
++                    self.sent_tool_call_done_events.add(idx)
++                    self._pending_tool_call_done_events.append(
++                        self.create_tool_call_item_done_event(idx)
++                    )
++
++        if self._pending_tool_call_done_events:
++            return self._pending_tool_call_done_events.pop(0)
++        return None
++
+     def return_default_initial_events(
+         self,
+     ) -> Optional[BaseLiteLLMOpenAIResponseObject]:
+@@ -285,15 +408,22 @@ class LiteLLMCompletionStreamingIterator(ResponsesAPIStreamingIterator):
+         elif self.sent_response_in_progress_event is False:
+             self.sent_response_in_progress_event = True
+             return self.create_response_in_progress_event()
+-        elif self.sent_output_item_added_event is False:
++        elif self.sent_output_item_added_event is False and not self.seen_tool_calls:
+             self.sent_output_item_added_event = True
+             return self.create_output_item_added_event()
+-        elif self.sent_content_part_added_event is False:
++        elif self.sent_content_part_added_event is False and not self.seen_tool_calls:
+             self.sent_content_part_added_event = True
+             return self.create_content_part_added_event()
+         return None
+ 
+     def is_stream_finished(self) -> bool:
++        if self.seen_tool_calls:
++            tool_call_count = len(self.tool_call_items)
++            return (
++                tool_call_count > 0
++                and len(self.sent_tool_call_done_events) == tool_call_count
++                and len(self.sent_function_call_arguments_done_events) == tool_call_count
++            )
+         if (
+             self.sent_output_text_done_event is True
+             and self.sent_output_content_part_done_event is True
+@@ -351,6 +481,7 @@ class LiteLLMCompletionStreamingIterator(ResponsesAPIStreamingIterator):
+                     chunk = await self.litellm_custom_stream_wrapper.__anext__()
+                     if chunk is not None:
+                         chunk = cast(ModelResponseStream, chunk)
++                        self._capture_tool_calls_from_chunk(chunk)
+                         self.collected_chat_completion_chunks.append(chunk)
+                         response_api_chunk = (
+                             self._transform_chat_completion_chunk_to_response_api_chunk(
+@@ -388,6 +519,7 @@ class LiteLLMCompletionStreamingIterator(ResponsesAPIStreamingIterator):
+                     return result
+                 try:
+                     chunk = self.litellm_custom_stream_wrapper.__next__()
++                    self._capture_tool_calls_from_chunk(chunk)
+                     self.collected_chat_completion_chunks.append(chunk)
+                     response_api_chunk = (
+                         self._transform_chat_completion_chunk_to_response_api_chunk(
+@@ -451,7 +583,11 @@ class LiteLLMCompletionStreamingIterator(ResponsesAPIStreamingIterator):
+                 output_index=0,
+                 delta=reasoning_content,
+             )
+-        
++
++        # Priority 1.5: Handle tool call deltas
++        if self._pending_tool_call_events:
++            return self._pending_tool_call_events.pop(0)
++
+         # Priority 2: Handle text deltas
+         delta_content = self._get_delta_string_from_streaming_choices(chunk.choices)
+         if delta_content:
+@@ -471,6 +607,39 @@ class LiteLLMCompletionStreamingIterator(ResponsesAPIStreamingIterator):
+ 
+         return None
+ 
++    def _capture_tool_calls_from_chunk(self, chunk: ModelResponseStream) -> None:
++        if not chunk or not chunk.choices:
++            return
++        delta = chunk.choices[0].delta
++        tool_calls = getattr(delta, "tool_calls", None)
++        if not tool_calls:
++            return
++        self.seen_tool_calls = True
++        for tool_call in tool_calls:
++            tool_index = tool_call.index or 0
++            entry = self.tool_call_items.get(tool_index, {"arguments": ""})
++            if tool_call.id:
++                entry["id"] = tool_call.id
++            function = getattr(tool_call, "function", None)
++            if function:
++                if getattr(function, "name", None):
++                    entry["name"] = function.name
++                if tool_index not in self.sent_tool_call_added_events and (
++                    tool_call.id or function.name
++                ):
++                    self.sent_tool_call_added_events.add(tool_index)
++                    self._pending_tool_call_events.append(
++                        self.create_tool_call_item_added_event(tool_index)
++                    )
++                if getattr(function, "arguments", None):
++                    entry["arguments"] += function.arguments
++                    self._pending_tool_call_events.append(
++                        self.create_function_call_arguments_delta_event(
++                            tool_index, function.arguments
++                        )
++                    )
++            self.tool_call_items[tool_index] = entry
++
+     def _get_delta_string_from_streaming_choices(
+         self, choices: List[StreamingChoices]
+     ) -> str:
+diff --git a/litellm/responses/litellm_completion_transformation/transformation.py b/litellm/responses/litellm_completion_transformation/transformation.py
+index ad910c9cd9..af7a97dc2e 100644
+--- a/litellm/responses/litellm_completion_transformation/transformation.py
++++ b/litellm/responses/litellm_completion_transformation/transformation.py
+@@ -366,15 +366,6 @@ class LiteLLMCompletionResponsesConfig:
+                 ChatCompletionResponseMessage,
+             ]
+         ] = []
+-        tool_call_output_messages: List[
+-            Union[
+-                AllMessageValues,
+-                GenericChatCompletionMessage,
+-                ChatCompletionMessageToolCall,
+-                ChatCompletionResponseMessage,
+-            ]
+-        ] = []
+-
+         if isinstance(input, str):
+             messages.append(ChatCompletionUserMessage(role="user", content=input))
+         elif isinstance(input, list):
+@@ -383,17 +374,7 @@ class LiteLLMCompletionResponsesConfig:
+                     input_item=_input
+                 )
+ 
+-                #########################################################
+-                # If Input Item is a Tool Call Output, add it to the tool_call_output_messages list
+-                #########################################################
+-                if LiteLLMCompletionResponsesConfig._is_input_item_tool_call_output(
+-                    input_item=_input
+-                ):
+-                    tool_call_output_messages.extend(chat_completion_messages)
+-                else:
+-                    messages.extend(chat_completion_messages)
+-
+-        messages.extend(tool_call_output_messages)
++                messages.extend(chat_completion_messages)
+         return messages
+ 
+     @staticmethod
+@@ -703,6 +684,8 @@ class LiteLLMCompletionResponsesConfig:
+         """
+         return input_item.get("type") in [
+             "function_call_output",
++            "tool_call_output",
++            "tool_output",
+             "web_search_call",
+             "computer_call_output",
+             "tool_result",  # Anthropic/MCP format
+@@ -728,15 +711,33 @@ class LiteLLMCompletionResponsesConfig:
+         """
+         ChatCompletionToolMessage is used to indicate the output from a tool call
+         """
+-        call_id = tool_call_output.get("call_id")
++        call_id = (
++            tool_call_output.get("call_id")
++            or tool_call_output.get("tool_call_id")
++            or tool_call_output.get("id")
++        )
+         # If call_id is missing or empty, skip this message
+         # Empty call_id means we can't create a valid tool message
+         if not call_id:
+             return []
+-        
++
++        output = tool_call_output.get("output")
++        if output is None:
++            output = tool_call_output.get("content", "")
++        if isinstance(output, list):
++            text_parts: List[str] = []
++            for item in output:
++                if isinstance(item, dict):
++                    text_value = item.get("text")
++                    if text_value is not None:
++                        text_parts.append(str(text_value))
++                elif isinstance(item, str):
++                    text_parts.append(item)
++            output = "".join(text_parts)
++
+         tool_output_message = ChatCompletionToolMessage(
+             role="tool",
+-            content=tool_call_output.get("output") or "",
++            content=output or "",
+             tool_call_id=str(call_id),
+         )
+ 
+@@ -1193,7 +1194,7 @@ class LiteLLMCompletionResponsesConfig:
+             id=chat_completion_response.id,
+             created_at=chat_completion_response.created,
+             model=chat_completion_response.model,
+-            object=chat_completion_response.object,
++            object="response",
+             error=getattr(chat_completion_response, "error", None),
+             incomplete_details=getattr(
+                 chat_completion_response, "incomplete_details", None
+@@ -1411,6 +1412,8 @@ class LiteLLMCompletionResponsesConfig:
+                 )
+                 message_output_items.extend(image_generation_items)
+             else:
++                if choice.message.content is None and choice.message.tool_calls:
++                    continue
+                 # Regular message output
+                 message_output_items.append(
+                     GenericResponseOutputItem(
+@@ -1495,7 +1498,7 @@ class LiteLLMCompletionResponsesConfig:
+ 
+         return OutputText(
+             type="output_text",
+-            text=message.content,
++            text=message.content or "",
+             annotations=transformed_annotations,
+         )
+ 
+diff --git a/litellm/utils.py b/litellm/utils.py
+index 805fbafcfc..f990ceaff3 100644
+--- a/litellm/utils.py
++++ b/litellm/utils.py
+@@ -6967,6 +6967,9 @@ from litellm.types.llms.openai import (
+     OpenAIMessageContent,
+     ValidUserMessageContentTypes,
+ )
++from litellm.litellm_core_utils.prompt_templates.factory import (
++    THOUGHT_SIGNATURE_SEPARATOR,
++)
+ 
+ 
+ def convert_to_dict(message: Union[BaseModel, dict]) -> dict:
+@@ -7014,9 +7017,169 @@ def validate_and_fix_openai_messages(messages: List):
+         convert_msg_to_dict = cast(AllMessageValues, convert_to_dict(message))
+         cleaned_message = cleanup_none_field_in_message(message=convert_msg_to_dict)
+         new_messages.append(cleaned_message)
++    new_messages = _merge_consecutive_assistant_tool_calls(messages=new_messages)
++    new_messages = _normalize_tool_call_message_ids(messages=new_messages)
++    new_messages = _reorder_tool_messages_for_openai(messages=new_messages)
++    new_messages = _drop_dangling_assistant_tool_calls(messages=new_messages)
+     return validate_chat_completion_user_messages(messages=new_messages)
+ 
+ 
++def _merge_consecutive_assistant_tool_calls(
++    messages: List[AllMessageValues],
++) -> List[AllMessageValues]:
++    if not messages:
++        return messages
++    merged: List[AllMessageValues] = []
++    for message in messages:
++        if (
++            message.get("role") == "assistant"
++            and message.get("tool_calls")
++            and merged
++            and merged[-1].get("role") == "assistant"
++            and merged[-1].get("tool_calls")
++        ):
++            prev_tool_calls = merged[-1].get("tool_calls") or []
++            curr_tool_calls = message.get("tool_calls") or []
++            tool_call_by_id: Dict[str, Any] = {}
++            for tool_call in prev_tool_calls:
++                if isinstance(tool_call, dict):
++                    tool_call_id = tool_call.get("id")
++                    if tool_call_id:
++                        tool_call_by_id[str(tool_call_id)] = tool_call
++            for tool_call in curr_tool_calls:
++                if isinstance(tool_call, dict):
++                    tool_call_id = tool_call.get("id")
++                    if tool_call_id:
++                        tool_call_by_id[str(tool_call_id)] = tool_call
++            if tool_call_by_id:
++                merged[-1]["tool_calls"] = list(tool_call_by_id.values())
++            if not merged[-1].get("content") and message.get("content"):
++                merged[-1]["content"] = message.get("content")
++            continue
++        merged.append(message)
++    return merged
++
++
++def _reorder_tool_messages_for_openai(
++    messages: List[AllMessageValues],
++) -> List[AllMessageValues]:
++    if not messages:
++        return messages
++    tool_message_indices_by_id: Dict[str, List[int]] = {}
++    for idx, message in enumerate(messages):
++        if message.get("role") != "tool":
++            continue
++        tool_call_id = message.get("tool_call_id")
++        if not tool_call_id:
++            continue
++        tool_message_indices_by_id.setdefault(str(tool_call_id), []).append(idx)
++
++    used_indices: set[int] = set()
++    reordered: List[AllMessageValues] = []
++    for idx, message in enumerate(messages):
++        if idx in used_indices:
++            continue
++        if message.get("role") == "assistant" and message.get("tool_calls"):
++            reordered.append(message)
++            tool_calls = message.get("tool_calls") or []
++            for tool_call in tool_calls:
++                if not isinstance(tool_call, dict):
++                    continue
++                tool_call_id = tool_call.get("id")
++                if not tool_call_id:
++                    continue
++                for tool_idx in tool_message_indices_by_id.get(
++                    str(tool_call_id), []
++                ):
++                    if tool_idx in used_indices:
++                        continue
++                    reordered.append(messages[tool_idx])
++                    used_indices.add(tool_idx)
++            continue
++        reordered.append(message)
++    return reordered
++
++
++def _normalize_tool_call_message_ids(
++    messages: List[AllMessageValues],
++) -> List[AllMessageValues]:
++    if not messages:
++        return messages
++    tool_message_by_id: Dict[str, List[AllMessageValues]] = {}
++    tool_message_by_base_id: Dict[str, List[AllMessageValues]] = {}
++    for message in messages:
++        if message.get("role") != "tool":
++            continue
++        tool_call_id = message.get("tool_call_id")
++        if not tool_call_id:
++            continue
++        tool_call_id_str = str(tool_call_id)
++        tool_message_by_id.setdefault(tool_call_id_str, []).append(message)
++        base_id = tool_call_id_str.split(THOUGHT_SIGNATURE_SEPARATOR, 1)[0]
++        tool_message_by_base_id.setdefault(base_id, []).append(message)
++
++    for message in messages:
++        if message.get("role") != "assistant" or not message.get("tool_calls"):
++            continue
++        tool_calls = message.get("tool_calls") or []
++        for tool_call in tool_calls:
++            if not isinstance(tool_call, dict):
++                continue
++            tool_call_id = tool_call.get("id")
++            if not tool_call_id:
++                continue
++            tool_call_id_str = str(tool_call_id)
++            if tool_call_id_str in tool_message_by_id:
++                continue
++            base_id = tool_call_id_str.split(THOUGHT_SIGNATURE_SEPARATOR, 1)[0]
++            candidates = tool_message_by_base_id.get(base_id, [])
++            if len(candidates) == 1:
++                candidates[0]["tool_call_id"] = tool_call_id_str
++    return messages
++
++
++def _drop_dangling_assistant_tool_calls(
++    messages: List[AllMessageValues],
++) -> List[AllMessageValues]:
++    if not messages:
++        return messages
++    last_tool_message_index_by_id: Dict[str, int] = {}
++    for idx, message in enumerate(messages):
++        if message.get("role") != "tool":
++            continue
++        tool_call_id = message.get("tool_call_id")
++        if not tool_call_id:
++            continue
++        last_tool_message_index_by_id[str(tool_call_id)] = idx
++
++    pruned: List[AllMessageValues] = []
++    for idx, message in enumerate(messages):
++        if message.get("role") != "assistant" or not message.get("tool_calls"):
++            pruned.append(message)
++            continue
++        tool_calls = message.get("tool_calls") or []
++        retained_tool_calls: List[Any] = []
++        for tool_call in tool_calls:
++            if not isinstance(tool_call, dict):
++                retained_tool_calls.append(tool_call)
++                continue
++            tool_call_id = tool_call.get("id")
++            if not tool_call_id:
++                continue
++            tool_call_id_str = str(tool_call_id)
++            if last_tool_message_index_by_id.get(tool_call_id_str, -1) > idx:
++                retained_tool_calls.append(tool_call)
++        if retained_tool_calls:
++            message["tool_calls"] = retained_tool_calls
++            pruned.append(message)
++            continue
++        message_content = message.get("content")
++        if message_content is not None and message_content != "":
++            message.pop("tool_calls", None)
++            pruned.append(message)
++    return pruned
++
++
+ def validate_and_fix_openai_tools(tools: Optional[List]) -> Optional[List[dict]]:
+     """
+     Ensure tools is List[dict] and not List[BaseModel]
