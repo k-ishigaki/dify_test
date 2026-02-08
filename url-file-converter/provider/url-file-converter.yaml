@@ -1,0 +1,62 @@
+identity:
+  author: "k-ishigaki"
+  name: "url-file-converter"
+  label:
+    en_US: "url-file-converter"
+    zh_Hans: "url-file-converter"
+    pt_BR: "url-file-converter"
+    ja_JP: "url-file-converter"
+  description:
+    en_US: "Downloads a file from the given URL and returns it as a Dify file object, ready to be used in workflows and knowledge bases."
+    zh_Hans: "从给定的URL下载文件，并以Dify文件对象返回，可用于工作流和知识库。"
+    pt_BR: "Faz download de um arquivo a partir da URL fornecida e retorna como objeto de arquivo do Dify, pronto para uso em workflows e bases de conhecimento."
+    ja_JP: "指定したURLからファイルをダウンロードし、ワークフローやナレッジで利用できるDifyファイルオブジェクトとして返します。"
+  icon: "icon.svg"
+
+#########################################################################################
+# If you want to support OAuth, you can uncomment the following code.
+#########################################################################################
+# oauth_schema:
+#   client_schema:
+#     - name: "client_id"
+#       type: "secret-input"
+#       required: true
+#       url: https://example.com/oauth/authorize
+#       placeholder:
+#         en_US: "Please input your Client ID"
+#         zh_Hans: "请输入你的 Client ID"
+#         pt_BR: "Insira seu Client ID"
+#       help:
+#         en_US: "Client ID is used to authenticate requests to the example.com API."
+#         zh_Hans: "Client ID 用于认证请求到 example.com API。"
+#         pt_BR: "Client ID é usado para autenticar solicitações à API do example.com."
+#       label:
+#         zh_Hans: "Client ID"
+#         en_US: "Client ID"
+#     - name: "client_secret"
+#       type: "secret-input"
+#       required: true
+#       url: https://example.com/oauth/authorize
+#       placeholder:
+#         en_US: "Please input your Client Secret"
+#         zh_Hans: "请输入你的 Client Secret"
+#         pt_BR: "Insira seu Client Secret"
+#       help:
+#         en_US: "Client Secret is used to authenticate requests to the example.com API."
+#         zh_Hans: "Client Secret 用于认证请求到 example.com API。"
+#         pt_BR: "Client Secret é usado para autenticar solicitações à API do example.com."
+#       label:
+#         zh_Hans: "Client Secret"
+#         en_US: "Client Secret"
+#   credentials_schema:
+#     - name: "access_token"
+#       type: "secret-input"
+#       label:
+#         zh_Hans: "Access Token"
+#         en_US: "Access Token"
+
+tools:
+  - tools/url-file-converter.yaml
+extra:
+  python:
+    source: provider/url-file-converter.py

@@ -1,0 +1,35 @@
+version: 0.0.1
+type: plugin
+author: k-ishigaki
+name: url-file-converter
+label:
+  en_US: url-file-converter
+  ja_JP: url-file-converter
+  zh_Hans: url-file-converter
+  pt_BR: url-file-converter
+description:
+  en_US: Downloads a file from the given URL and returns it as a Dify file object, ready to be used in workflows and knowledge bases.
+  ja_JP: 指定したURLからファイルをダウンロードし、ワークフローやナレッジで利用できるDifyファイルオブジェクトとして返します。
+  zh_Hans: 从给定的URL下载文件，并以Dify文件对象返回，可用于工作流和知识库。
+  pt_BR: Faz download de um arquivo a partir da URL fornecida e retorna como objeto de arquivo do Dify, pronto para uso em workflows e bases de conhecimento.
+icon: icon.svg
+icon_dark: icon-dark.svg
+resource:
+  memory: 268435456
+  permission: {}
+plugins:
+  tools:
+    - provider/url-file-converter.yaml
+meta:
+  version: 0.0.1
+  arch:
+    - amd64
+    - arm64
+  runner:
+    language: python
+    version: "3.12"
+    entrypoint: main
+  minimum_dify_version: 1.9.0
+created_at: 2026-02-07T18:15:52.556883+09:00
+privacy: PRIVACY.md
+verified: false

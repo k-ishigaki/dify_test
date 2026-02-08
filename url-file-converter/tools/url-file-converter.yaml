@@ -1,0 +1,53 @@
+identity:
+  name: "url-file-converter"
+  author: "k-ishigaki"
+  label:
+    en_US: "url-file-converter"
+    zh_Hans: "url-file-converter"
+    pt_BR: "url-file-converter"
+    ja_JP: "url-file-converter"
+description:
+  human:
+    en_US: "Downloads a file from the given URL and returns it as a Dify file object, ready to be used in workflows and knowledge bases."
+    zh_Hans: "从给定的URL下载文件，并以Dify文件对象返回，可用于工作流和知识库。"
+    pt_BR: "Faz download de um arquivo a partir da URL fornecida e retorna como objeto de arquivo do Dify, pronto para uso em workflows e bases de conhecimento."
+    ja_JP: "指定したURLからファイルをダウンロードし、ワークフローやナレッジで利用できるDifyファイルオブジェクトとして返します。"
+  llm: "Downloads a file from the given URL and returns it as a Dify file object, ready to be used in workflows and knowledge bases."
+parameters:
+  - name: url
+    type: string
+    required: true
+    label:
+      en_US: File URL
+      zh_Hans: 文件URL
+      pt_BR: URL do arquivo
+      ja_JP: ファイルURL
+    human_description:
+      en_US: "The URL of the file to download."
+      zh_Hans: "要下载的文件URL。"
+      pt_BR: "A URL do arquivo a ser baixado."
+      ja_JP: "ダウンロード対象ファイルのURL。"
+    llm_description: "The URL of the file to download."
+    form: llm
+output_schema:
+  type: object
+  properties:
+    result:
+      type: object
+      description: "Download result for the URL."
+      properties:
+        url:
+          type: string
+        filename:
+          type: string
+        mime_type:
+          type: string
+        size:
+          type: number
+        status:
+          type: string
+        error:
+          type: string
+extra:
+  python:
+    source: tools/url-file-converter.py
