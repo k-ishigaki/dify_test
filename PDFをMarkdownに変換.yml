@@ -159,192 +159,16 @@ workflow:
       type: custom
       zIndex: 0
     - data:
-        isInIteration: false
-        isInLoop: false
-        sourceType: start
-        targetType: template-transform
-      id: 1770452282569-source-1770454831905-target
-      selected: false
-      source: '1770452282569'
-      sourceHandle: source
-      target: '1770454831905'
-      targetHandle: target
-      type: custom
-      zIndex: 0
-    - data:
-        isInIteration: false
-        isInLoop: false
-        sourceType: iteration
-        targetType: loop
-      id: 1770454277915-source-1770454910465-target
-      selected: false
-      source: '1770454277915'
-      sourceHandle: source
-      target: '1770454910465'
-      targetHandle: target
-      type: custom
-      zIndex: 0
-    - data:
-        isInLoop: false
-        sourceType: template-transform
-        targetType: loop
-      id: 1770454831905-source-1770454910465-target
-      selected: false
-      source: '1770454831905'
-      sourceHandle: source
-      target: '1770454910465'
-      targetHandle: target
-      type: custom
-      zIndex: 0
-    - data:
-        isInLoop: false
-        sourceType: iteration
-        targetType: loop
-      id: 1770454404971-source-1770454910465-target
-      selected: false
-      source: '1770454404971'
-      sourceHandle: source
-      target: '1770454910465'
-      targetHandle: target
-      type: custom
-      zIndex: 0
-    - data:
-        isInIteration: false
-        isInLoop: true
-        loop_id: '1770454910465'
-        sourceType: loop-start
-        targetType: template-transform
-      id: 1770454910465start-source-1770461959205-target
-      selected: false
-      source: 1770454910465start
-      sourceHandle: source
-      target: '1770461959205'
-      targetHandle: target
-      type: custom
-      zIndex: 1002
-    - data:
-        isInIteration: false
-        isInLoop: true
-        loop_id: '1770454910465'
-        sourceType: template-transform
-        targetType: tool
-      id: 1770461959205-source-1770462465012-target
-      source: '1770461959205'
-      sourceHandle: source
-      target: '1770462465012'
-      targetHandle: target
-      type: custom
-      zIndex: 1002
-    - data:
-        isInIteration: false
-        isInLoop: true
-        loop_id: '1770454910465'
-        sourceType: loop-start
-        targetType: template-transform
-      id: 1770454910465start-source-1770462513088-target
-      source: 1770454910465start
-      sourceHandle: source
-      target: '1770462513088'
-      targetHandle: target
-      type: custom
-      zIndex: 1002
-    - data:
-        isInIteration: false
-        isInLoop: true
-        loop_id: '1770454910465'
-        sourceType: template-transform
-        targetType: if-else
-      id: 1770462513088-source-1770462686596-target
-      source: '1770462513088'
-      sourceHandle: source
-      target: '1770462686596'
-      targetHandle: target
-      type: custom
-      zIndex: 1002
-    - data:
-        isInIteration: false
-        isInLoop: true
-        loop_id: '1770454910465'
-        sourceType: if-else
-        targetType: loop-end
-      id: 1770462686596-false-1770462854881-target
-      source: '1770462686596'
-      sourceHandle: 'false'
-      target: '1770462854881'
-      targetHandle: target
-      type: custom
-      zIndex: 1002
-    - data:
-        isInIteration: false
-        isInLoop: true
-        loop_id: '1770454910465'
-        sourceType: llm
-        targetType: template-transform
-      id: 1770462489973-source-1770462967505-target
-      source: '1770462489973'
-      sourceHandle: source
-      target: '1770462967505'
-      targetHandle: target
-      type: custom
-      zIndex: 1002
-    - data:
-        isInIteration: false
-        isInLoop: true
-        loop_id: '1770454910465'
-        sourceType: template-transform
-        targetType: assigner
-      id: 1770462967505-source-1770462888814-target
-      source: '1770462967505'
-      sourceHandle: source
-      target: '1770462888814'
-      targetHandle: target
-      type: custom
-      zIndex: 1002
-    - data:
-        isInLoop: false
-        sourceType: loop
-        targetType: tool
-      id: 1770454910465-source-1770465523853-target
-      source: '1770454910465'
-      sourceHandle: source
-      target: '1770465523853'
-      targetHandle: target
-      type: custom
-      zIndex: 0
-    - data:
-        isInLoop: false
-        sourceType: tool
-        targetType: end
-      id: 1770465523853-source-1770462859458-target
-      source: '1770465523853'
-      sourceHandle: source
-      target: '1770462859458'
-      targetHandle: target
-      type: custom
-      zIndex: 0
-    - data:
         isInIteration: true
         isInLoop: false
         iteration_id: '1770454404971'
         sourceType: iteration-start
         targetType: http-request
       id: 1770454404971start-source-1770562318405-target
+      selected: false
       source: 1770454404971start
       sourceHandle: source
       target: '1770562318405'
-      targetHandle: target
-      type: custom
-      zIndex: 1002
-    - data:
-        isInIteration: false
-        isInLoop: true
-        loop_id: '1770454910465'
-        sourceType: if-else
-        targetType: llm
-      id: 1770462686596-true-1770462489973-target
-      source: '1770462686596'
-      sourceHandle: 'true'
-      target: '1770462489973'
       targetHandle: target
       type: custom
       zIndex: 1002
@@ -354,6 +178,7 @@ workflow:
         sourceType: start
         targetType: http-request
       id: 1770452282569-source-1770806846109-target
+      selected: false
       source: '1770452282569'
       sourceHandle: source
       target: '1770806846109'
@@ -366,6 +191,7 @@ workflow:
         sourceType: http-request
         targetType: code
       id: 1770806846109-source-1770806900883-target
+      selected: false
       source: '1770806846109'
       sourceHandle: source
       target: '1770806900883'
@@ -374,23 +200,11 @@ workflow:
       zIndex: 0
     - data:
         isInIteration: false
-        isInLoop: true
-        loop_id: '1770454910465'
-        sourceType: tool
-        targetType: if-else
-      id: 1770462465012-source-1770462686596-target
-      source: '1770462465012'
-      sourceHandle: source
-      target: '1770462686596'
-      targetHandle: target
-      type: custom
-      zIndex: 1002
-    - data:
-        isInIteration: false
         isInLoop: false
         sourceType: code
         targetType: llm
       id: 1770806900883-source-1770814078078-target
+      selected: false
       source: '1770806900883'
       sourceHandle: source
       target: '1770814078078'
@@ -398,17 +212,189 @@ workflow:
       type: custom
       zIndex: 0
     - data:
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1770454404971'
+        sourceType: http-request
+        targetType: tool
+      id: 1770562318405-source-1770913181334-target
+      source: '1770562318405'
+      sourceHandle: source
+      target: '1770913181334'
+      targetHandle: target
+      type: custom
+      zIndex: 1002
+    - data:
         isInIteration: false
         isInLoop: false
-        sourceType: llm
-        targetType: loop
-      id: 1770814078078-source-1770454910465-target
-      source: '1770814078078'
+        sourceType: iteration
+        targetType: iteration
+      id: 1770454404971-source-1770991700947-target
+      source: '1770454404971'
       sourceHandle: source
-      target: '1770454910465'
+      target: '1770991700947'
       targetHandle: target
       type: custom
       zIndex: 0
+    - data:
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1770991700947'
+        sourceType: iteration-start
+        targetType: tool
+      id: 1770991700947start-source-1770991752141-target
+      source: 1770991700947start
+      sourceHandle: source
+      target: '1770991752141'
+      targetHandle: target
+      type: custom
+      zIndex: 1002
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: iteration
+      id: 1770814078078-source-1770991923703-target
+      source: '1770814078078'
+      sourceHandle: source
+      target: '1770991923703'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1770991923703'
+        sourceType: code
+        targetType: code
+      id: 1771032252152-source-1771032342891-target
+      source: '1771032252152'
+      sourceHandle: source
+      target: '1771032342891'
+      targetHandle: target
+      type: custom
+      zIndex: 1002
+    - data:
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1770991923703'
+        sourceType: code
+        targetType: llm
+      id: 1771032342891-source-1771032382822-target
+      source: '1771032342891'
+      sourceHandle: source
+      target: '1771032382822'
+      targetHandle: target
+      type: custom
+      zIndex: 1002
+    - data:
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1770991923703'
+        sourceType: tool
+        targetType: llm
+      id: 1771030994148-source-1771032382822-target
+      source: '1771030994148'
+      sourceHandle: source
+      target: '1771032382822'
+      targetHandle: target
+      type: custom
+      zIndex: 1002
+    - data:
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1770991923703'
+        sourceType: llm
+        targetType: code
+      id: 1771032382822-source-1771032507733-target
+      source: '1771032382822'
+      sourceHandle: source
+      target: '1771032507733'
+      targetHandle: target
+      type: custom
+      zIndex: 1002
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: iteration
+        targetType: code
+      id: 1770991923703-source-1771032675892-target
+      source: '1770991923703'
+      sourceHandle: source
+      target: '1771032675892'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: tool
+      id: 1771032675892-source-1771032823991-target
+      source: '1771032675892'
+      sourceHandle: source
+      target: '1771032823991'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: tool
+        targetType: end
+      id: 1771032823991-source-1770462859458-target
+      source: '1771032823991'
+      sourceHandle: source
+      target: '1770462859458'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: iteration
+        targetType: iteration
+      id: 1770454277915-source-1770991923703-target
+      source: '1770454277915'
+      sourceHandle: source
+      target: '1770991923703'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: iteration
+        targetType: iteration
+      id: 1770991700947-source-1770991923703-target
+      source: '1770991700947'
+      sourceHandle: source
+      target: '1770991923703'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1770991923703'
+        sourceType: iteration-start
+        targetType: tool
+      id: 1770991923703start-source-1771030994148-target
+      source: 1770991923703start
+      sourceHandle: source
+      target: '1771030994148'
+      targetHandle: target
+      type: custom
+      zIndex: 1002
+    - data:
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1770991923703'
+        sourceType: iteration-start
+        targetType: code
+      id: 1770991923703start-source-1771032252152-target
+      source: 1770991923703start
+      sourceHandle: source
+      target: '1771032252152'
+      targetHandle: target
+      type: custom
+      zIndex: 1002
     nodes:
     - data:
         selected: false
@@ -435,10 +421,10 @@ workflow:
       id: '1770452282569'
       position:
         x: 0
-        y: 615
+        y: 560
       positionAbsolute:
         x: 0
-        y: 615
+        y: 560
       selected: false
       sourcePosition: right
       targetPosition: left
@@ -498,10 +484,10 @@ workflow:
       id: '1770452470467'
       position:
         x: 362
-        y: 87
+        y: 364
       positionAbsolute:
         x: 362
-        y: 87
+        y: 364
       selected: false
       sourcePosition: right
       targetPosition: left
@@ -659,31 +645,6 @@ workflow:
       width: 242
       zIndex: 1002
     - data:
-        author: k-ishigaki
-        desc: ''
-        height: 395
-        selected: false
-        showAuthor: true
-        text: '{"root":{"children":[{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"PDFリストを作る","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"PDFリストでループ","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"　・PDFから画像に変換して、画像から画像URLを取得","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"　・PDFをMarkitdownでテキスト化","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"　・ループから脱却","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"目次素案を作成（空文字）","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"前ページ情報用意（空文字）","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"無限ループ","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"　・インデックスで画像URLとテキストを取得→なければbreak","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"　・画像URLから画像内容取得（base64？）","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"　・画像をファイル化（file
-          tools）","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"　・目次素案、前ページ情報、画像、テキストからそのページ分のMarkdown出力","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"　・目次素案、今回のMarkdown内容から目次素案更新","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[],"direction":null,"format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"課題","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"・途中で途切れているPDFはどうする？（論文とかあるある）","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"　→前のページ情報を渡して回避するか","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""}],"direction":null,"format":"","indent":0,"type":"root","version":1}}'
-        theme: blue
-        title: ''
-        type: ''
-        width: 391
-      height: 395
-      id: '1770452639056'
-      position:
-        x: 561.7094108168712
-        y: 780.1633855809598
-      positionAbsolute:
-        x: 561.7094108168712
-        y: 780.1633855809598
-      selected: false
-      sourcePosition: right
-      targetPosition: left
-      type: custom-note
-      width: 391
-    - data:
         error_handle_mode: terminated
         flatten_output: true
         height: 208
@@ -705,10 +666,10 @@ workflow:
       height: 208
       id: '1770454277915'
       position:
-        x: 1310
+        x: 1632
         y: 0
       positionAbsolute:
-        x: 1310
+        x: 1632
         y: 0
       selected: false
       sourcePosition: right
@@ -730,7 +691,7 @@ workflow:
         x: 60
         y: 80
       positionAbsolute:
-        x: 1370
+        x: 1692
         y: 80
       selectable: false
       selected: false
@@ -875,7 +836,7 @@ workflow:
         x: 184
         y: 60
       positionAbsolute:
-        x: 1494
+        x: 1816
         y: 60
       selected: false
       sourcePosition: right
@@ -893,15 +854,15 @@ workflow:
         - '1770452470467'
         - files
         output_selector:
-        - '1770562318405'
-        - body
-        output_type: array[string]
+        - '1770913181334'
+        - files
+        output_type: array[file]
         parallel_nums: 10
         selected: false
         start_node_id: 1770454404971start
         title: markdownリスト作成
         type: iteration
-        width: 544
+        width: 808
       height: 257
       id: '1770454404971'
       position:
@@ -914,7 +875,7 @@ workflow:
       sourcePosition: right
       targetPosition: left
       type: custom
-      width: 544
+      width: 808
       zIndex: 1
     - data:
         desc: ''
@@ -940,126 +901,614 @@ workflow:
       width: 44
       zIndex: 1002
     - data:
-        selected: false
-        template: '# {{ filename }}'
-        title: 前回ページ情報
-        type: template-transform
-        variables:
+        outputs:
         - value_selector:
-          - '1770452282569'
-          - file
-          - name
-          value_type: file
-          variable: filename
-      height: 52
-      id: '1770454831905'
+          - '1771032823991'
+          - files
+          value_type: array[file]
+          variable: file
+        - value_selector:
+          - '1771032675892'
+          - result
+          value_type: string
+          variable: markdown
+        selected: false
+        title: 出力
+        type: end
+      height: 114
+      id: '1770462859458'
       position:
-        x: 1368
-        y: 521
+        x: 4494
+        y: 342
       positionAbsolute:
-        x: 1368
-        y: 521
+        x: 4494
+        y: 342
       selected: false
       sourcePosition: right
       targetPosition: left
       type: custom
       width: 242
     - data:
-        break_conditions: []
-        error_handle_mode: terminated
-        height: 374
-        logical_operator: and
-        loop_count: 100
-        loop_variables:
-        - id: 194a2939-96da-48fe-a1c5-0a3509a76085
-          label: previous_info
-          value:
-          - '1770454831905'
-          - output
-          value_type: variable
-          var_type: string
-        - id: eb7ea116-e896-4cbe-92ab-b73a7cc40ea2
-          label: i
-          value: '0'
-          value_type: constant
-          var_type: number
-        - id: b544c15b-a5c3-478e-b46a-3759641e0c1a
-          label: markdown
-          value:
-          - '1770454831905'
-          - output
-          value_type: variable
-          var_type: string
+        authorization:
+          config: null
+          type: no-auth
+        body:
+          data:
+          - file:
+            - '1770454404971'
+            - item
+            id: key-value-182
+            key: file
+            type: file
+            value: ''
+          type: form-data
+        headers: ''
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1770454404971'
+        method: post
+        params: ''
+        retry_config:
+          max_retries: 3
+          retry_enabled: true
+          retry_interval: 100
         selected: false
-        start_node_id: 1770454910465start
-        title: ループ
-        type: loop
-        width: 2164
-      height: 374
-      id: '1770454910465'
+        ssl_verify: true
+        timeout:
+          max_connect_timeout: 0
+          max_read_timeout: 0
+          max_write_timeout: 0
+        title: HTTP リクエスト
+        type: http-request
+        url: http://pdf2md:8080/convert?format=raw
+        variables: []
+      height: 137
+      id: '1770562318405'
+      parentId: '1770454404971'
       position:
-        x: 1916
-        y: 249
+        x: 184
+        y: 60
       positionAbsolute:
-        x: 1916
-        y: 249
+        x: 908
+        y: 330
       selected: false
       sourcePosition: right
       targetPosition: left
       type: custom
-      width: 2164
+      width: 242
+      zIndex: 1002
+    - data:
+        authorization:
+          config: null
+          type: no-auth
+        body:
+          data:
+          - file:
+            - '1770452282569'
+            - file
+            id: key-value-137
+            key: file
+            type: file
+            value: ''
+          type: form-data
+        headers: ''
+        method: post
+        params: ''
+        retry_config:
+          max_retries: 3
+          retry_enabled: true
+          retry_interval: 100
+        selected: false
+        ssl_verify: true
+        timeout:
+          max_connect_timeout: 0
+          max_read_timeout: 0
+          max_write_timeout: 0
+        title: 全ページMarkdown化
+        type: http-request
+        url: http://pdf2md:8080/convert?format=raw
+        variables: []
+      height: 137
+      id: '1770806846109'
+      position:
+        x: 362
+        y: 564
+      positionAbsolute:
+        x: 362
+        y: 564
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        code: "def main(markdown: str):\n    \"\"\"Extract markdown headings (lines\
+          \ starting with '#') excluding those inside fenced code blocks.\"\"\"\n\
+          \    lines = markdown.splitlines()\n\n    headings = []\n    in_fenced_code_block\
+          \ = False\n\n    for line in lines:\n        stripped = line.lstrip()\n\n\
+          \        # Toggle fenced code block state on lines starting with ``` or\
+          \ ~~~\n        if stripped.startswith(\"```\") or stripped.startswith(\"\
+          ~~~\"):\n            in_fenced_code_block = not in_fenced_code_block\n \
+          \           continue\n\n        if in_fenced_code_block:\n            continue\n\
+          \n        # Heading lines: must start with one or more '#' after optional\
+          \ leading spaces\n        if stripped.startswith(\"#\"):\n            headings.append(line)\n\
+          \n    return {\n        \"result\": \"\\n\".join(headings),\n    }\n"
+        code_language: python3
+        outputs:
+          result:
+            children: null
+            type: string
+        selected: false
+        title: 見出しのみ抽出
+        type: code
+        variables:
+        - value_selector:
+          - '1770806846109'
+          - body
+          value_type: string
+          variable: markdown
+      height: 52
+      id: '1770806900883'
+      position:
+        x: 1534
+        y: 607
+      positionAbsolute:
+        x: 1534
+        y: 607
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        model:
+          completion_params: {}
+          mode: chat
+          name: gpt-5.2
+          provider: langgenius/openai/openai
+        prompt_template:
+        - id: 55967c67-53d0-4d7b-9361-75156288790c
+          role: system
+          text: '以下は、PDFをmarkdownに変換してその見出し部分のみを抽出したものです。この中から見出しとすべきではない見出し（OCRで間違って見出し扱いされてしまったと思われる見出し）の行を削除したものを出力してください。
+
+
+            注意点：
+
+            * 出力にはコードブロックは含めないこと
+
+            * 残す見出しの見出しレベルは、周辺の流れを考えて構造的になるように増減させること
+
+
+            ```markdown
+
+            {{#1770806900883.result#}}
+
+            ```'
+        selected: false
+        title: 見出しフィルター
+        type: llm
+        vision:
+          enabled: false
+      height: 88
+      id: '1770814078078'
+      position:
+        x: 1876
+        y: 589
+      positionAbsolute:
+        x: 1876
+        y: 589
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        isInIteration: true
+        isInLoop: false
+        is_team_authorization: true
+        iteration_id: '1770454404971'
+        paramSchemas:
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: The content to save as a file. This can be plain text or base64
+              encoded binary data. Choose the appropriate format in the "format" parameter.
+            ja_JP: ファイルとして保存するコンテンツ。プレーンテキストまたは Base64 エンコードされたバイナリデータ。 "format" パラメータで適切な形式を選択する。
+            pt_BR: O conteúdo a ser salvo como arquivo. Pode ser texto simples ou
+              dados binários codificados em Base64. Escolha o formato apropriado no
+              parâmetro "format".
+            zh_Hans: 要保存为文件的内容。可以是纯文本或 Base64 编码的二进制数据。 在 "format" 参数中选择适当的格式。
+          label:
+            en_US: Content to save
+            ja_JP: Content to save
+            pt_BR: Content to save
+            zh_Hans: Content to save
+          llm_description: ''
+          max: null
+          min: null
+          name: content
+          options: []
+          placeholder: null
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: output.txt
+          form: llm
+          human_description:
+            en_US: The name of the file to save the content as. This should include
+              the file extension (e.g., "output.txt").
+            ja_JP: 保存するファイル名。 ファイル拡張子を含める（例："output.txt"）。
+            pt_BR: O nome do arquivo para salvar o conteúdo. Deve incluir a extensão
+              do arquivo (por exemplo, "output.txt").
+            zh_Hans: 保存内容的文件名。 应包含文件扩展名（例如："output.txt"）。
+          label:
+            en_US: File name to save as
+            ja_JP: File name to save as
+            pt_BR: File name to save as
+            zh_Hans: File name to save as
+          llm_description: ''
+          max: null
+          min: null
+          name: filename
+          options: []
+          placeholder: null
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: ''
+          form: llm
+          human_description:
+            en_US: The MIME type of the file. If not provided, it will be guessed
+              from the file name.
+            ja_JP: ファイルの MIME タイプ。提供されない場合、ファイル名から推測される。
+            pt_BR: O tipo MIME do arquivo. Se não fornecido, será adivinhado a partir
+              do nome do arquivo.
+            zh_Hans: 文件的 MIME 类型。如果未提供，将从文件名猜测。
+          label:
+            en_US: MIME type of the file
+            ja_JP: MIME type of the file
+            pt_BR: MIME type of the file
+            zh_Hans: MIME type of the file
+          llm_description: ''
+          max: null
+          min: null
+          name: mime_type
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: text
+          form: form
+          human_description:
+            en_US: The format of the content to save. Select "text" to save passed
+              string content as is, or "base64" to save passed content after decoding
+              it from base64.
+            ja_JP: コンテンツの形式。 渡された文字列コンテンツをそのまま保存する場合は "text" を選択し、 Base64 からデコードして保存する場合は
+              "base64" を選択する。
+            pt_BR: O formato do conteúdo a ser salvo. Selecione "text" para salvar
+              o conteúdo da string passada como está, ou "base64" para salvar o conteúdo
+              passado após decodificá-lo do Base64.
+            zh_Hans: 要保存的内容格式。 选择 "text" 按原样保存传递的字符串内容， 或选择 "base64" 在从 Base64 解码后保存传递的内容。
+          label:
+            en_US: Format of the content
+            ja_JP: Format of the content
+            pt_BR: Format of the content
+            zh_Hans: Format of the content
+          llm_description: ''
+          max: null
+          min: null
+          name: format
+          options:
+          - icon: ''
+            label:
+              en_US: text
+              ja_JP: text
+              pt_BR: text
+              zh_Hans: text
+            value: text
+          - icon: ''
+            label:
+              en_US: base64
+              ja_JP: base64
+              pt_BR: base64
+              zh_Hans: base64
+            value: base64
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: select
+        - auto_generate: null
+          default: ''
+          form: llm
+          human_description:
+            en_US: The encoding to use when saving the file. This parameter is only
+              used when the format is "text". Specify a valid Python encoding name
+              (e.g., "utf-8", "shift_jis", "euc-jp"). Default is empty, which means
+              "utf-8".
+            ja_JP: ファイルを保存する際に使用するエンコーディング。 このパラメータは、形式が "text" の場合にのみ使用される。 有効な Python
+              エンコーディング名を指定する（例："utf-8"、"shift_jis"、"euc-jp"）。 デフォルトは空で、"utf-8" を意味する。
+            pt_BR: A codificação a ser usada ao salvar o arquivo. Este parâmetro é
+              usado apenas quando o formato é "text". Especifique um nome de codificação
+              Python válido (por exemplo, "utf-8", "shift_jis", "euc-jp"). O padrão
+              é vazio, o que significa "utf-8".
+            zh_Hans: 保存文件时使用的编码。 此参数仅在格式为 "text" 时使用。 指定有效的 Python 编码名称（例如："utf-8"、"shift_jis"、"euc-jp"）。
+              默认值为空，表示 "utf-8"。
+          label:
+            en_US: Encoding
+            ja_JP: エンコーディング
+            pt_BR: Codificação
+            zh_Hans: 编码
+          llm_description: ''
+          max: null
+          min: null
+          name: encoding
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        params:
+          content: ''
+          encoding: ''
+          filename: ''
+          format: ''
+          mime_type: ''
+        plugin_id: kurokobo/file_tools
+        plugin_unique_identifier: kurokobo/file_tools:0.0.2@8bde7b4d2c30cf22e8f6ce851572af244f7a5776addab94330b820dc2160726c
+        provider_icon: https://dify.k-ishigaki.com/console/api/workspaces/current/plugin/icon?tenant_id=0c49c8ba-2169-427e-81e8-d055005de118&filename=ee7d6c28060a54d022218fdf905d7111d02c37749d033c631e13651d6a1539d2.svg
+        provider_id: kurokobo/file_tools/file_tools
+        provider_name: kurokobo/file_tools/file_tools
+        provider_type: builtin
+        selected: false
+        title: ファイルとして保存
+        tool_configurations:
+          format:
+            type: constant
+            value: text
+        tool_description: 入力テキストまたは Base64 エンコードされたバイナリデータを、指定されたファイル名と MIME タイプでファイルとして保存します。
+        tool_label: ファイルとして保存
+        tool_name: save_as_file
+        tool_node_version: '2'
+        tool_parameters:
+          content:
+            type: mixed
+            value: '{{#1770562318405.body#}}'
+          encoding:
+            type: mixed
+            value: ''
+          filename:
+            type: mixed
+            value: output.md
+          mime_type:
+            type: mixed
+            value: ''
+        type: tool
+      height: 88
+      id: '1770913181334'
+      parentId: '1770454404971'
+      position:
+        x: 506
+        y: 85
+      positionAbsolute:
+        x: 1230
+        y: 355
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+      zIndex: 1002
+    - data:
+        error_handle_mode: terminated
+        flatten_output: true
+        height: 208
+        is_parallel: false
+        iterator_input_type: array[file]
+        iterator_selector:
+        - '1770454404971'
+        - output
+        output_selector:
+        - '1770991752141'
+        - text
+        output_type: array[string]
+        parallel_nums: 10
+        selected: false
+        start_node_id: 1770991700947start
+        title: Markdown URLリスト作成
+        type: iteration
+        width: 486
+      height: 208
+      id: '1770991700947'
+      position:
+        x: 1632
+        y: 295
+      positionAbsolute:
+        x: 1632
+        y: 295
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 486
       zIndex: 1
     - data:
         desc: ''
-        isInLoop: true
+        isInIteration: true
         selected: false
         title: ''
-        type: loop-start
+        type: iteration-start
       draggable: false
       height: 48
-      id: 1770454910465start
-      parentId: '1770454910465'
+      id: 1770991700947start
+      parentId: '1770991700947'
       position:
         x: 60
-        y: 160
+        y: 80
       positionAbsolute:
-        x: 1976
-        y: 409
+        x: 1692
+        y: 375
       selectable: false
-      selected: false
       sourcePosition: right
       targetPosition: left
-      type: custom-loop-start
+      type: custom-iteration-start
       width: 44
       zIndex: 1002
     - data:
-        isInIteration: false
-        isInLoop: true
-        loop_id: '1770454910465'
+        isInIteration: true
+        isInLoop: false
+        is_team_authorization: true
+        iteration_id: '1770991700947'
+        paramSchemas:
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: File object to get download url.
+            ja_JP: ダウンロード URL を取得するファイルオブジェクト。
+            pt_BR: Objeto de arquivo para obter URL de download.
+            zh_Hans: 要获取下载 URL 的文件对象。
+          label:
+            en_US: File
+            ja_JP: File
+            pt_BR: File
+            zh_Hans: File
+          llm_description: ''
+          max: null
+          min: null
+          name: file
+          options: []
+          placeholder: null
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: file
+        - auto_generate: null
+          default: ''
+          form: llm
+          human_description:
+            en_US: The text to use for the markdown link. Ignored if "format" is not
+              "markdown". Default is empty, which means the filename will be used
+              as the link text.
+            ja_JP: Markdown リンクに使用するテキスト。"format" が "markdown" でない場合は無視される。 デフォルトは空で、ファイル名がリンクテキストとして使用される。
+            pt_BR: O texto a ser usado para o link markdown. Ignorado se "format"
+              não for "markdown". O padrão é vazio, o que significa que o nome do
+              arquivo será usado como texto do link.
+            zh_Hans: 用于 Markdown 链接的文本。如果 "format" 不是 "markdown" 则忽略。 默认为空，这意味着文件名将用作链接文本。
+          label:
+            en_US: Link text for markdown link
+            ja_JP: Link text for markdown link
+            pt_BR: Link text for markdown link
+            zh_Hans: Link text for markdown link
+          llm_description: ''
+          max: null
+          min: null
+          name: link_text
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: plain
+          form: form
+          human_description:
+            en_US: Format of the download url. "markdown" for markdown link, "plain"
+              for plain url. Default is "plain".
+            ja_JP: ダウンロード URL の形式。Markdown リンクの場合は "markdown"、プレーン URL の場合は "plain"。
+              デフォルトは "plain"。
+            pt_BR: Formato da URL de download. "markdown" para link markdown, "plain"
+              para URL simples. O padrão é "plain".
+            zh_Hans: 下载 URL 的格式。"markdown" 表示 Markdown 链接，"plain" 表示纯 URL。 默认为 "plain"。
+          label:
+            en_US: Format of the download url
+            ja_JP: Format of the download url
+            pt_BR: Format of the download url
+            zh_Hans: Format of the download url
+          llm_description: ''
+          max: null
+          min: null
+          name: format
+          options:
+          - icon: ''
+            label:
+              en_US: markdown
+              ja_JP: markdown
+              pt_BR: markdown
+              zh_Hans: markdown
+            value: markdown
+          - icon: ''
+            label:
+              en_US: plain
+              ja_JP: plain
+              pt_BR: plain
+              zh_Hans: plain
+            value: plain
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: select
+        params:
+          file: ''
+          format: ''
+          link_text: ''
+        plugin_id: kurokobo/file_tools
+        plugin_unique_identifier: kurokobo/file_tools:0.0.2@8bde7b4d2c30cf22e8f6ce851572af244f7a5776addab94330b820dc2160726c
+        provider_icon: https://dify.k-ishigaki.com/console/api/workspaces/current/plugin/icon?tenant_id=0c49c8ba-2169-427e-81e8-d055005de118&filename=ee7d6c28060a54d022218fdf905d7111d02c37749d033c631e13651d6a1539d2.svg
+        provider_id: kurokobo/file_tools/file_tools
+        provider_name: kurokobo/file_tools/file_tools
+        provider_type: builtin
         selected: false
-        template: '{{ url_list[i] }}'
-        title: 画像URL取得
-        type: template-transform
-        variables:
-        - value_selector:
-          - '1770454277915'
-          - output
-          value_type: array[string]
-          variable: url_list
-        - value_selector:
-          - '1770454910465'
-          - i
-          value_type: number
-          variable: i
-      height: 52
-      id: '1770461959205'
-      parentId: '1770454910465'
+        title: ダウンロード URL を取得
+        tool_configurations:
+          format:
+            type: constant
+            value: plain
+        tool_description: ファイルオブジェクトのダウンロード URL を取得し、オプションで Markdown リンクとして出力します。
+        tool_label: ダウンロード URL を取得
+        tool_name: get_download_url
+        tool_node_version: '2'
+        tool_parameters:
+          file:
+            type: variable
+            value:
+            - '1770991700947'
+            - item
+          link_text:
+            type: mixed
+            value: ''
+        type: tool
+      height: 88
+      id: '1770991752141'
+      parentId: '1770991700947'
       position:
-        x: 204
-        y: 150
+        x: 184
+        y: 60
       positionAbsolute:
-        x: 2120
-        y: 399
+        x: 1816
+        y: 355
       selected: false
       sourcePosition: right
       targetPosition: left
@@ -1067,10 +1516,65 @@ workflow:
       width: 242
       zIndex: 1002
     - data:
-        isInIteration: false
-        isInLoop: true
+        error_handle_mode: terminated
+        flatten_output: true
+        height: 297
+        is_parallel: true
+        iterator_input_type: array[string]
+        iterator_selector:
+        - '1770454277915'
+        - output
+        output_selector:
+        - '1771032507733'
+        - result
+        output_type: array[string]
+        parallel_nums: 10
+        selected: false
+        start_node_id: 1770991923703start
+        title: 1ページずつMarkdown化
+        type: iteration
+        width: 1472
+      height: 297
+      id: '1770991923703'
+      position:
+        x: 2238
+        y: 250
+      positionAbsolute:
+        x: 2238
+        y: 250
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 1472
+      zIndex: 1
+    - data:
+        desc: ''
+        isInIteration: true
+        selected: false
+        title: ''
+        type: iteration-start
+      draggable: false
+      height: 48
+      id: 1770991923703start
+      parentId: '1770991923703'
+      position:
+        x: 60
+        y: 166
+      positionAbsolute:
+        x: 2298
+        y: 416
+      selectable: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom-iteration-start
+      width: 44
+      zIndex: 1002
+    - data:
+        isInIteration: true
+        isInLoop: false
         is_team_authorization: true
-        loop_id: '1770454910465'
+        iteration_id: '1770991923703'
         paramSchemas:
         - auto_generate: null
           default: null
@@ -1114,17 +1618,107 @@ workflow:
         tool_parameters:
           url:
             type: mixed
-            value: '{{#1770461959205.output#}}'
+            value: '{{#1770991923703.item#}}'
         type: tool
       height: 52
-      id: '1770462465012'
-      parentId: '1770454910465'
+      id: '1771030994148'
+      parentId: '1770991923703'
       position:
-        x: 526
-        y: 150
+        x: 294
+        y: 60
+      positionAbsolute:
+        x: 2532
+        y: 310
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+      zIndex: 1002
+    - data:
+        code: "\nimport requests\n\ndef main(markdown_url_list: list[str], index:\
+          \ int):\n    markdown_url = markdown_url_list[index]\n    \"\"\"Download\
+          \ markdown content from the given URL and return it as result.\"\"\"\n \
+          \   resp = requests.get(markdown_url, timeout=30)\n    resp.raise_for_status()\n\
+          \    return {\n        \"result\": resp.text,\n    }\n"
+        code_language: python3
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1770991923703'
+        outputs:
+          result:
+            children: null
+            type: string
+        selected: false
+        title: Markdown取得
+        type: code
+        variables:
+        - value_selector:
+          - '1770991700947'
+          - output
+          value_type: array[string]
+          variable: markdown_url_list
+        - value_selector:
+          - '1770991923703'
+          - index
+          value_type: number
+          variable: index
+      height: 52
+      id: '1771032252152'
+      parentId: '1770991923703'
+      position:
+        x: 204
+        y: 172
       positionAbsolute:
         x: 2442
-        y: 399
+        y: 422
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+      zIndex: 1002
+    - data:
+        code: "def main(markdown: str):\n    \"\"\"Remove leading '#' from Markdown\
+          \ headings only (keep '#' inside code blocks).\"\"\"\n\n    lines = markdown.splitlines(keepends=True)\n\
+          \    out = []\n    in_fenced_code = False\n\n    for line in lines:\n  \
+          \      stripped = line.lstrip()\n\n        # Toggle fenced code blocks:\
+          \ ``` or ~~~ (allow leading spaces)\n        if stripped.startswith(\"```\"\
+          ) or stripped.startswith(\"~~~\"):\n            in_fenced_code = not in_fenced_code\n\
+          \            out.append(line)\n            continue\n\n        if in_fenced_code:\n\
+          \            out.append(line)\n            continue\n\n        # For headings:\
+          \ remove all leading '#' characters, then remove one following space if\
+          \ present\n        i = 0\n        while i < len(line) and line[i] == \"\
+          #\":\n            i += 1\n        if i > 0:\n            if i < len(line)\
+          \ and line[i] == \" \":\n                i += 1\n            out.append(line[i:])\n\
+          \        else:\n            out.append(line)\n\n    return {\n        \"\
+          result\": \"\".join(out),\n    }\n"
+        code_language: python3
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1770991923703'
+        outputs:
+          result:
+            children: null
+            type: string
+        selected: false
+        title: 見出しの「#」除去
+        type: code
+        variables:
+        - value_selector:
+          - '1771032252152'
+          - result
+          value_type: string
+          variable: markdown
+      height: 52
+      id: '1771032342891'
+      parentId: '1770991923703'
+      position:
+        x: 526
+        y: 172
+      positionAbsolute:
+        x: 2764
+        y: 422
       selected: false
       sourcePosition: right
       targetPosition: left
@@ -1135,63 +1729,61 @@ workflow:
         context:
           enabled: false
           variable_selector: []
-        isInIteration: false
-        isInLoop: true
-        loop_id: '1770454910465'
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1770991923703'
         model:
-          completion_params: {}
+          completion_params:
+            temperature: 0.7
           mode: chat
-          name: gpt-5.2
+          name: gpt-5-mini
           provider: langgenius/openai/openai
         prompt_template:
-        - id: 47134208-ac9c-49e0-9fe6-1cb967e25915
+        - id: 22181e3a-ec6c-4da8-9eca-c8479cc0c74a
           role: system
           text: '目的は、最終的にPDFを正確にMarkdownへ変換することです。OCRのみでは図表や表の情報が欠落・誤認されることがあるため、LLMを用いて図表情報を統合・補完し、文脈に沿った正確なMarkdownを出力します。今回はそのうちの1ページ分の処理です。
 
+            注意点を厳守し、「現在ページのOCR結果」と画像情報を統合したmarkdownを出力してください。
 
-            「現在ページのOCR結果」と画像情報を統合したmarkdownを出力してください。
+
+            ## 注意点
 
 
-            ## 注意点（ **絶対厳守** ）：
+            * 画像リンクは置かないこと（あくまで情報を統合すること）
 
-            ・画像リンクは置かないこと（あくまで情報を統合すること）
+            * 画像の内容から、ページ内容の意味が通じるようにOCRの内容を適宜修正すること
 
-            ・画像の内容から、ページ内容の意味が通じるようにOCRの内容を適宜修正すること
+            * 出力は生のmarkdownのみとし、外側にはコードブロックを付与しないこと
 
-            ・出力は生のmarkdownのみとし、外側にはコードブロックを付与しないこと
+            * 「全ページの見出し情報」で今回に該当すると思われる部分の見出しを採用すること
 
-            ・「前回ページ情報」の見出しが現在ページに続いている場合、今回の現在ページのmarkdownにその見出しの行は出力しないこと
+            * 「全ページの見出し情報」に含まれない見出しは、見出しとはしないこと
 
-            ・「現在ページのOCR結果」の見出しレベルは無視し、「全ページの見出しレベル情報」で今回に該当すると思われる部分の見出しレベルを採用すること
-
-            ・「全ページの見出しレベル情報」に含まれない見出しは、見出しとはしないこと
+            * 見出しレベルは「全ページの見出し情報」のみを採用し、勝手にレベルの深さを変更しないこと
 
 
             ## 現在ページのOCR結果
 
+
             ```markdown
 
-            {{#1770462513088.output#}}
+            {{#1771032342891.result#}}
 
             ```
 
 
-            ## 前回ページ情報
+            ## 全ページの見出し情報
 
-            ```markdown
-
-            {{#1770454910465.previous_info#}}
-
-            ```
-
-
-            ## 全ページの見出しレベル情報
 
             ```markdown
 
             {{#1770814078078.text#}}
 
             ```'
+        retry_config:
+          max_retries: 10
+          retry_enabled: true
+          retry_interval: 5000
         selected: false
         title: 画像情報統合
         type: llm
@@ -1199,18 +1791,18 @@ workflow:
           configs:
             detail: high
             variable_selector:
-            - '1770462465012'
+            - '1771030994148'
             - files
           enabled: true
-      height: 88
-      id: '1770462489973'
-      parentId: '1770454910465'
+      height: 117
+      id: '1771032382822'
+      parentId: '1770991923703'
       position:
-        x: 1191.428571428571
-        y: 174
+        x: 848
+        y: 120
       positionAbsolute:
-        x: 3107.428571428571
-        y: 423
+        x: 3086
+        y: 370
       selected: false
       sourcePosition: right
       targetPosition: left
@@ -1218,209 +1810,86 @@ workflow:
       width: 242
       zIndex: 1002
     - data:
-        isInIteration: false
-        isInLoop: true
-        loop_id: '1770454910465'
+        code: "\ndef main(markdown: str, index: int):\n    return {\n        \"result\"\
+          : str(index) + \"\\n\" + markdown\n    }\n"
+        code_language: python3
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1770991923703'
+        outputs:
+          result:
+            children: null
+            type: string
         selected: false
-        template: '{{ markdown_list[i] }}'
-        title: Markdown取得
-        type: template-transform
+        title: 結果生成
+        type: code
         variables:
         - value_selector:
-          - '1770454404971'
+          - '1771032382822'
+          - text
+          value_type: string
+          variable: markdown
+        - value_selector:
+          - '1770991923703'
+          - index
+          value_type: number
+          variable: index
+      height: 52
+      id: '1771032507733'
+      parentId: '1770991923703'
+      position:
+        x: 1170
+        y: 153
+      positionAbsolute:
+        x: 3408
+        y: 403
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+      zIndex: 1002
+    - data:
+        code: "\ndef main(markdown_list: list[str]):\n    \"\"\"markdown_list: 先頭行に数値(順序)が含まれるmarkdown文字列の配列。\n\
+          \n    - 各要素の1行目に含まれる数値をキーに昇順ソートする\n    - ソート後の順でmarkdown本文を結合して返す\n    -\
+          \ 先頭行の数値部分は除去する\n    \"\"\"\n    import re\n\n    def extract_order_and_body(md:\
+          \ str):\n        lines = md.splitlines()\n        first = lines[0] if lines\
+          \ else \"\"\n        m = re.search(r\"\\d+\", first)\n        order = int(m.group())\
+          \ if m else 10**18\n\n        # 先頭行の数値部分だけを除去（他の文字は残す）\n        if m:\n\
+          \            cleaned_first = first[:m.start()] + first[m.end():]\n     \
+          \       cleaned_first = cleaned_first.lstrip(\" \\t-.:：\")\n        else:\n\
+          \            cleaned_first = first\n\n        cleaned = \"\\n\".join([cleaned_first]\
+          \ + lines[1:]) if lines else \"\"\n        return order, cleaned\n\n   \
+          \ parts = [extract_order_and_body(md) for md in markdown_list]\n    parts.sort(key=lambda\
+          \ x: x[0])\n    combined = \"\\n\".join(body for _, body in parts)\n\n \
+          \   return {\n        \"result\": combined,\n    }\n"
+        code_language: python3
+        outputs:
+          result:
+            children: null
+            type: string
+        selected: false
+        title: Markdown結合
+        type: code
+        variables:
+        - value_selector:
+          - '1770991923703'
           - output
           value_type: array[string]
           variable: markdown_list
-        - value_selector:
-          - '1770454910465'
-          - i
-          value_type: number
-          variable: i
       height: 52
-      id: '1770462513088'
-      parentId: '1770454910465'
+      id: '1771032675892'
       position:
-        x: 294
-        y: 262
+        x: 3810
+        y: 373
       positionAbsolute:
-        x: 2210
-        y: 511
+        x: 3810
+        y: 373
       selected: false
       sourcePosition: right
       targetPosition: left
       type: custom
       width: 242
-      zIndex: 1002
-    - data:
-        cases:
-        - case_id: 'true'
-          conditions:
-          - comparison_operator: not empty
-            id: 0d857a2e-4ac3-4719-a928-e403a6f9ecc5
-            value: None
-            varType: string
-            variable_selector:
-            - '1770461959205'
-            - output
-          id: 'true'
-          logical_operator: and
-        isInIteration: false
-        isInLoop: true
-        loop_id: '1770454910465'
-        selected: false
-        title: IF/ELSE
-        type: if-else
-      height: 124
-      id: '1770462686596'
-      parentId: '1770454910465'
-      position:
-        x: 848
-        y: 135
-      positionAbsolute:
-        x: 2764
-        y: 384
-      selected: false
-      sourcePosition: right
-      targetPosition: left
-      type: custom
-      width: 242
-      zIndex: 1002
-    - data:
-        isInIteration: false
-        isInLoop: true
-        loop_id: '1770454910465'
-        selected: false
-        title: ループ完了
-        type: loop-end
-      height: 54
-      id: '1770462854881'
-      parentId: '1770454910465'
-      position:
-        x: 1190
-        y: 60
-      positionAbsolute:
-        x: 3106
-        y: 309
-      selected: false
-      sourcePosition: right
-      targetPosition: left
-      type: custom-simple
-      width: 244
-      zIndex: 1002
-    - data:
-        outputs:
-        - value_selector:
-          - '1770465523853'
-          - files
-          value_type: array[file]
-          variable: file
-        - value_selector:
-          - '1770454910465'
-          - markdown
-          value_type: string
-          variable: markdown
-        selected: false
-        title: 出力
-        type: end
-      height: 114
-      id: '1770462859458'
-      position:
-        x: 4522
-        y: 379
-      positionAbsolute:
-        x: 4522
-        y: 379
-      selected: false
-      sourcePosition: right
-      targetPosition: left
-      type: custom
-      width: 242
-    - data:
-        isInIteration: false
-        isInLoop: true
-        items:
-        - input_type: constant
-          operation: +=
-          value: 1
-          variable_selector:
-          - '1770454910465'
-          - i
-          write_mode: over-write
-        - input_type: variable
-          operation: over-write
-          value:
-          - '1770462967505'
-          - output
-          variable_selector:
-          - '1770454910465'
-          - markdown
-          write_mode: over-write
-        - input_type: variable
-          operation: over-write
-          value:
-          - '1770462489973'
-          - text
-          variable_selector:
-          - '1770454910465'
-          - previous_info
-          write_mode: over-write
-        loop_id: '1770454910465'
-        selected: false
-        title: 変数代入
-        type: assigner
-        version: '2'
-      height: 136
-      id: '1770462888814'
-      parentId: '1770454910465'
-      position:
-        x: 1834
-        y: 150
-      positionAbsolute:
-        x: 3750
-        y: 399
-      selected: false
-      sourcePosition: right
-      targetPosition: left
-      type: custom
-      width: 242
-      zIndex: 1002
-    - data:
-        isInIteration: false
-        isInLoop: true
-        loop_id: '1770454910465'
-        selected: false
-        template: '{{ markdown }}
-
-
-          {{ current }}'
-        title: Markdown結合
-        type: template-transform
-        variables:
-        - value_selector:
-          - '1770454910465'
-          - markdown
-          value_type: string
-          variable: markdown
-        - value_selector:
-          - '1770462489973'
-          - text
-          value_type: string
-          variable: current
-      height: 52
-      id: '1770462967505'
-      parentId: '1770454910465'
-      position:
-        x: 1512
-        y: 192
-      positionAbsolute:
-        x: 3428
-        y: 441
-      selected: false
-      sourcePosition: right
-      targetPosition: left
-      type: custom
-      width: 242
-      zIndex: 1002
     - data:
         is_team_authorization: true
         paramSchemas:
@@ -1603,7 +2072,7 @@ workflow:
         tool_parameters:
           content:
             type: mixed
-            value: '{{#1770454910465.markdown#}}'
+            value: '{{#1771032675892.result#}}'
           encoding:
             type: mixed
             value: ''
@@ -1615,190 +2084,19 @@ workflow:
             value: ''
         type: tool
       height: 88
-      id: '1770465523853'
+      id: '1771032823991'
       position:
-        x: 4180
-        y: 392
+        x: 4152
+        y: 355
       positionAbsolute:
-        x: 4180
-        y: 392
-      selected: false
-      sourcePosition: right
-      targetPosition: left
-      type: custom
-      width: 242
-    - data:
-        authorization:
-          config: null
-          type: no-auth
-        body:
-          data:
-          - file:
-            - '1770454404971'
-            - item
-            id: key-value-182
-            key: file
-            type: file
-            value: ''
-          type: form-data
-        headers: ''
-        isInIteration: true
-        isInLoop: false
-        iteration_id: '1770454404971'
-        method: post
-        params: ''
-        retry_config:
-          max_retries: 3
-          retry_enabled: true
-          retry_interval: 100
-        selected: false
-        ssl_verify: true
-        timeout:
-          max_connect_timeout: 0
-          max_read_timeout: 0
-          max_write_timeout: 0
-        title: HTTP リクエスト
-        type: http-request
-        url: http://pdf2md:8080/convert?format=raw
-        variables: []
-      height: 137
-      id: '1770562318405'
-      parentId: '1770454404971'
-      position:
-        x: 184
-        y: 60
-      positionAbsolute:
-        x: 908
-        y: 330
-      selected: false
-      sourcePosition: right
-      targetPosition: left
-      type: custom
-      width: 242
-      zIndex: 1002
-    - data:
-        authorization:
-          config: null
-          type: no-auth
-        body:
-          data:
-          - file:
-            - '1770452282569'
-            - file
-            id: key-value-137
-            key: file
-            type: file
-            value: ''
-          type: form-data
-        headers: ''
-        method: post
-        params: ''
-        retry_config:
-          max_retries: 3
-          retry_enabled: true
-          retry_interval: 100
-        selected: false
-        ssl_verify: true
-        timeout:
-          max_connect_timeout: 0
-          max_read_timeout: 0
-          max_write_timeout: 0
-        title: 全ページMarkdown化
-        type: http-request
-        url: http://pdf2md:8080/convert?format=raw
-        variables: []
-      height: 137
-      id: '1770806846109'
-      position:
-        x: 362
-        y: 628
-      positionAbsolute:
-        x: 362
-        y: 628
-      selected: false
-      sourcePosition: right
-      targetPosition: left
-      type: custom
-      width: 242
-    - data:
-        code: "def main(markdown: str):\n    \"\"\"Extract markdown headings (lines\
-          \ starting with '#') excluding those inside fenced code blocks.\"\"\"\n\
-          \    lines = markdown.splitlines()\n\n    headings = []\n    in_fenced_code_block\
-          \ = False\n\n    for line in lines:\n        stripped = line.lstrip()\n\n\
-          \        # Toggle fenced code block state on lines starting with ``` or\
-          \ ~~~\n        if stripped.startswith(\"```\") or stripped.startswith(\"\
-          ~~~\"):\n            in_fenced_code_block = not in_fenced_code_block\n \
-          \           continue\n\n        if in_fenced_code_block:\n            continue\n\
-          \n        # Heading lines: must start with one or more '#' after optional\
-          \ leading spaces\n        if stripped.startswith(\"#\"):\n            headings.append(line)\n\
-          \n    return {\n        \"result\": \"\\n\".join(headings),\n    }\n"
-        code_language: python3
-        outputs:
-          result:
-            children: null
-            type: string
-        selected: false
-        title: 見出しのみ抽出
-        type: code
-        variables:
-        - value_selector:
-          - '1770806846109'
-          - body
-          value_type: string
-          variable: markdown
-      height: 52
-      id: '1770806900883'
-      position:
-        x: 1026
-        y: 671
-      positionAbsolute:
-        x: 1026
-        y: 671
-      selected: false
-      sourcePosition: right
-      targetPosition: left
-      type: custom
-      width: 242
-    - data:
-        context:
-          enabled: false
-          variable_selector: []
-        model:
-          completion_params: {}
-          mode: chat
-          name: gpt-5-mini
-          provider: langgenius/openai/openai
-        prompt_template:
-        - id: 55967c67-53d0-4d7b-9361-75156288790c
-          role: system
-          text: '以下は、PDFをmarkdownに変換してその見出し部分のみを抽出したものです。この中から見出しとすべきではない見出し（OCRで間違って見出し扱いされてしまったと思われる見出し）を削除したものを出力してください。出力にはコードブロックは含めないでください。
-
-
-            ```markdown
-
-            {{#1770806900883.result#}}
-
-            ```'
-        selected: false
-        title: 見出しフィルター
-        type: llm
-        vision:
-          enabled: false
-      height: 88
-      id: '1770814078078'
-      position:
-        x: 1368
-        y: 653
-      positionAbsolute:
-        x: 1368
-        y: 653
-      selected: true
+        x: 4152
+        y: 355
       sourcePosition: right
       targetPosition: left
       type: custom
       width: 242
     viewport:
-      x: -1985.4074484795237
-      y: 221.4954452860064
-      zoom: 0.5401480612706275
+      x: -231.9796974201496
+      y: 151.4893894940514
+      zoom: 0.40204442424896225
   rag_pipeline_variables: []
