@@ -325,18 +325,6 @@ workflow:
       type: custom
       zIndex: 0
     - data:
-        isInIteration: false
-        isInLoop: false
-        sourceType: code
-        targetType: tool
-      id: 1771032675892-source-1771032823991-target
-      source: '1771032675892'
-      sourceHandle: source
-      target: '1771032823991'
-      targetHandle: target
-      type: custom
-      zIndex: 0
-    - data:
         isInLoop: false
         sourceType: tool
         targetType: end
@@ -395,6 +383,30 @@ workflow:
       targetHandle: target
       type: custom
       zIndex: 1002
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: code
+      id: 1771032675892-source-1771119033901-target
+      source: '1771032675892'
+      sourceHandle: source
+      target: '1771119033901'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: tool
+      id: 1771119033901-source-1771032823991-target
+      source: '1771119033901'
+      sourceHandle: source
+      target: '1771032823991'
+      targetHandle: target
+      type: custom
+      zIndex: 0
     nodes:
     - data:
         selected: false
@@ -421,10 +433,10 @@ workflow:
       id: '1770452282569'
       position:
         x: 0
-        y: 560
+        y: 600
       positionAbsolute:
         x: 0
-        y: 560
+        y: 600
       selected: false
       sourcePosition: right
       targetPosition: left
@@ -908,20 +920,20 @@ workflow:
           value_type: array[file]
           variable: file
         - value_selector:
-          - '1771032675892'
+          - '1771119033901'
           - result
           value_type: string
-          variable: markdown
+          variable: result
         selected: false
         title: 出力
         type: end
       height: 114
       id: '1770462859458'
       position:
-        x: 4494
+        x: 4856
         y: 342
       positionAbsolute:
-        x: 4494
+        x: 4856
         y: 342
       selected: false
       sourcePosition: right
@@ -1012,10 +1024,10 @@ workflow:
       id: '1770806846109'
       position:
         x: 362
-        y: 564
+        y: 604
       positionAbsolute:
         x: 362
-        y: 564
+        y: 604
       selected: false
       sourcePosition: right
       targetPosition: left
@@ -1051,10 +1063,10 @@ workflow:
       id: '1770806900883'
       position:
         x: 1534
-        y: 607
+        y: 647
       positionAbsolute:
         x: 1534
-        y: 607
+        y: 647
       selected: false
       sourcePosition: right
       targetPosition: left
@@ -1064,6 +1076,7 @@ workflow:
         context:
           enabled: false
           variable_selector: []
+        desc: pdf2mdの見出し情報はそのまま使うと、見出しとすべきではないものも見出し化されてしまうため、LLMに意味合い的修正を任せる。見出しレベルの調整も行ってもらう。
         model:
           completion_params: {}
           mode: chat
@@ -1088,18 +1101,18 @@ workflow:
 
             ```'
         selected: false
-        title: 見出しフィルター
+        title: 見出し調整
         type: llm
         vision:
           enabled: false
-      height: 88
+      height: 180
       id: '1770814078078'
       position:
         x: 1876
-        y: 589
+        y: 583
       positionAbsolute:
         x: 1876
-        y: 589
+        y: 583
       selected: false
       sourcePosition: right
       targetPosition: left
@@ -1518,7 +1531,7 @@ workflow:
     - data:
         error_handle_mode: terminated
         flatten_output: true
-        height: 297
+        height: 360
         is_parallel: true
         iterator_input_type: array[string]
         iterator_selector:
@@ -1533,20 +1546,20 @@ workflow:
         start_node_id: 1770991923703start
         title: 1ページずつMarkdown化
         type: iteration
-        width: 1472
-      height: 297
+        width: 1492
+      height: 360
       id: '1770991923703'
       position:
         x: 2238
-        y: 250
+        y: 219
       positionAbsolute:
         x: 2238
-        y: 250
+        y: 219
       selected: false
       sourcePosition: right
       targetPosition: left
       type: custom
-      width: 1472
+      width: 1492
       zIndex: 1
     - data:
         desc: ''
@@ -1560,10 +1573,10 @@ workflow:
       parentId: '1770991923703'
       position:
         x: 60
-        y: 166
+        y: 204
       positionAbsolute:
         x: 2298
-        y: 416
+        y: 423
       selectable: false
       sourcePosition: right
       targetPosition: left
@@ -1571,6 +1584,7 @@ workflow:
       width: 44
       zIndex: 1002
     - data:
+        desc: ''
         isInIteration: true
         isInLoop: false
         is_team_authorization: true
@@ -1624,11 +1638,11 @@ workflow:
       id: '1771030994148'
       parentId: '1770991923703'
       position:
-        x: 294
+        x: 526
         y: 60
       positionAbsolute:
-        x: 2532
-        y: 310
+        x: 2764
+        y: 279
       selected: false
       sourcePosition: right
       targetPosition: left
@@ -1668,10 +1682,10 @@ workflow:
       parentId: '1770991923703'
       position:
         x: 204
-        y: 172
+        y: 210
       positionAbsolute:
         x: 2442
-        y: 422
+        y: 429
       selected: false
       sourcePosition: right
       targetPosition: left
@@ -1694,6 +1708,7 @@ workflow:
           \        else:\n            out.append(line)\n\n    return {\n        \"\
           result\": \"\".join(out),\n    }\n"
         code_language: python3
+        desc: 適当な見出しが残っていると、画像情報を統合するときにLLMを混乱させてしまうため、OCR結果からは見出しを全除去しておく
         isInIteration: true
         isInLoop: false
         iteration_id: '1770991923703'
@@ -1710,7 +1725,7 @@ workflow:
           - result
           value_type: string
           variable: markdown
-      height: 52
+      height: 128
       id: '1771032342891'
       parentId: '1770991923703'
       position:
@@ -1718,7 +1733,7 @@ workflow:
         y: 172
       positionAbsolute:
         x: 2764
-        y: 422
+        y: 391
       selected: false
       sourcePosition: right
       targetPosition: left
@@ -1729,6 +1744,7 @@ workflow:
         context:
           enabled: false
           variable_selector: []
+        desc: 1ページ分のOCR結果と画像情報、そして全ページ分の見出し情報を渡し、1ページ分のMarkdownを出力してもらう
         isInIteration: true
         isInLoop: false
         iteration_id: '1770991923703'
@@ -1794,15 +1810,15 @@ workflow:
             - '1771030994148'
             - files
           enabled: true
-      height: 117
+      height: 193
       id: '1771032382822'
       parentId: '1770991923703'
       position:
-        x: 848
-        y: 120
+        x: 868
+        y: 107
       positionAbsolute:
-        x: 3086
-        y: 370
+        x: 3106
+        y: 326
       selected: false
       sourcePosition: right
       targetPosition: left
@@ -1838,11 +1854,11 @@ workflow:
       id: '1771032507733'
       parentId: '1770991923703'
       position:
-        x: 1170
-        y: 153
+        x: 1190
+        y: 178
       positionAbsolute:
-        x: 3408
-        y: 403
+        x: 3428
+        y: 397
       selected: false
       sourcePosition: right
       targetPosition: left
@@ -1880,10 +1896,10 @@ workflow:
       height: 52
       id: '1771032675892'
       position:
-        x: 3810
+        x: 3830
         y: 373
       positionAbsolute:
-        x: 3810
+        x: 3830
         y: 373
       selected: false
       sourcePosition: right
@@ -2072,7 +2088,7 @@ workflow:
         tool_parameters:
           content:
             type: mixed
-            value: '{{#1771032675892.result#}}'
+            value: '{{#1771119033901.result#}}'
           encoding:
             type: mixed
             value: ''
@@ -2086,17 +2102,78 @@ workflow:
       height: 88
       id: '1771032823991'
       position:
-        x: 4152
+        x: 4514
         y: 355
       positionAbsolute:
-        x: 4152
+        x: 4514
         y: 355
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        code: "def main(markdown: str):\n    \"\"\"Remove duplicate headings (same\
+          \ level & same text) while scanning top-to-bottom.\n\n    A heading is a\
+          \ line that starts with one or more '#' and is NOT inside a fenced code\
+          \ block.\n    If the same heading text already appeared at the same level\
+          \ in the current heading state,\n    the heading line is removed.\n    \"\
+          \"\"\n\n    lines = markdown.splitlines(True)  # keep line breaks\n\n  \
+          \  # current heading situation (index: level-1, value: heading text)\n \
+          \   heading_state: list[str] = []\n\n    in_fenced_code = False\n    fence\
+          \ = \"\"  # ``` or ~~~\n\n    out: list[str] = []\n\n    for line in lines:\n\
+          \        stripped = line.lstrip()\n\n        # Toggle fenced code block\
+          \ (``` or ~~~)\n        if not in_fenced_code:\n            if stripped.startswith(\"\
+          ```\") or stripped.startswith(\"~~~\"):\n                in_fenced_code\
+          \ = True\n                fence = stripped[:3]\n                out.append(line)\n\
+          \                continue\n        else:\n            if stripped.startswith(fence):\n\
+          \                in_fenced_code = False\n                fence = \"\"\n\
+          \                out.append(line)\n                continue\n          \
+          \  out.append(line)\n            continue\n\n        # Detect heading: starts\
+          \ with # (not in code block)\n        if stripped.startswith(\"#\"):\n \
+          \           # count heading level\n            i = 0\n            while\
+          \ i < len(stripped) and stripped[i] == \"#\":\n                i += 1\n\
+          \            level = i\n\n            # require a space after #'s (common\
+          \ markdown heading form)\n            if i < len(stripped) and stripped[i]\
+          \ == \" \":\n                heading_text = stripped[i + 1 :].rstrip(\"\\\
+          r\\n\")\n\n                # ensure heading_state length\n             \
+          \   if len(heading_state) < level:\n                    heading_state.extend([\"\
+          \"] * (level - len(heading_state)))\n\n                # if same heading\
+          \ already stored at this level -> remove this line\n                if heading_state[level\
+          \ - 1] == heading_text:\n                    continue\n\n              \
+          \  # otherwise overwrite store at this level\n                heading_state[level\
+          \ - 1] = heading_text\n\n        out.append(line)\n\n    return {\n    \
+          \    \"result\": \"\".join(out),\n    }\n"
+        code_language: python3
+        desc: 1ページずつmarkdown化しているので、ページをまたぐ場合に見出しが重複して出力されてしまう。その重複した見出しをコードで判別して除去している。
+        outputs:
+          result:
+            children: null
+            type: string
+        selected: true
+        title: 重複見出し除去
+        type: code
+        variables:
+        - value_selector:
+          - '1771032675892'
+          - result
+          value_type: string
+          variable: markdown
+      height: 144
+      id: '1771119033901'
+      position:
+        x: 4172
+        y: 373
+      positionAbsolute:
+        x: 4172
+        y: 373
+      selected: true
       sourcePosition: right
       targetPosition: left
       type: custom
       width: 242
     viewport:
-      x: -231.9796974201496
-      y: 151.4893894940514
-      zoom: 0.40204442424896225
+      x: -335.90017755777876
+      y: 202.69063714853928
+      zoom: 0.47547019959213216
   rag_pipeline_variables: []
